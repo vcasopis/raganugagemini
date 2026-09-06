@@ -1,7 +1,75 @@
+const LEGACY_BOOKS = [
+  {
+    id: 'bhakti-rasamrita-sindhu',
+    filename: 'Bhakti-rasāmṛta-sindhu.pdf',
+    short: 'Bhakti-rasāmṛta-sindhu',
+    author: 'Rūpa Gosvāmī',
+    script: 'PDF'
+  },
+
+  {
+    id: 'madhurya-kadambini',
+    filename: 'Madhurya-kadambini-eng-1ed.pdf',
+    short: 'Madhurya-kadambini',
+    author: 'Viśvanātha Cakravartī Ṭhākura',
+    script: 'PDF'
+  },
+
+  {
+    id: 'raga-vartma-candrika',
+    filename: 'RagaVartmaCandrika_eng_2nd_ed.pdf',
+    short: 'Rāga-vartma-candrikā',
+    author: 'Viśvanātha Cakravartī Ṭhākura',
+    script: 'PDF'
+  },
+
+  {
+    id: 'caitanya-caritamrita-adi',
+    filename: 'Sri Caitanya-cartamrta Adi-lila.pdf',
+    short: 'Śrī Caitanya-caritāmṛta — Ādi-līlā',
+    author: 'Kṛṣṇadāsa Kavirāja Gosvāmī',
+    script: 'PDF'
+  },
+
+  {
+    id: 'caitanya-caritamrita-antya',
+    filename: 'Sri Caitanya-cartamrta Antya-lila.pdf',
+    short: 'Śrī Caitanya-caritāmṛta — Antya-līlā',
+    author: 'Kṛṣṇadāsa Kavirāja Gosvāmī',
+    script: 'PDF'
+  },
+
+  {
+    id: 'caitanya-caritamrita-madhya',
+    filename: 'Sri Caitanya-cartamrta Madhya-lila.pdf',
+    short: 'Śrī Caitanya-caritāmṛta — Madhya-līlā',
+    author: 'Kṛṣṇadāsa Kavirāja Gosvāmī',
+    script: 'PDF'
+  },
+
+  {
+    id: 'prema-bhakti-candrika',
+    filename: 'Sri_Prema_Bhakti_Candrika.pdf',
+    short: 'Śrī Prema-bhakti-candrikā',
+    author: 'Narottama Dāsa Ṭhākura',
+    script: 'PDF'
+  },
+
+  {
+    id: 'ujjvala-nilamani-kirana',
+    filename: 'Ujjvala-nilamani-kirana_1Ed_2013.pdf',
+    short: 'Ujjvala-nīlamaṇi-kiraṇa',
+    author: 'Viśvanātha Cakravartī Ṭhākura',
+    script: 'PDF'
+  }
+];
+
+
 let BOOKS = [];
 
+
 const GITHUB_BOOKS_API =
-  'https://api.github.com/repos/vcasopis/raganuga/contents/books?ref=main';
+  'https://api.github.com/repos/vcasopis/raganuga/contents/books';
 
 
 const FALLBACK_BOOK = {
@@ -30,6 +98,7 @@ const FALLBACK_BOOK = {
         }
       ]
     },
+
     {
       id: 'chapter-2',
       title: 'Hearing and Practice',
@@ -175,6 +244,7 @@ const I18N = {
 
     aiNotConnected: 'AI generation will be connected next.'
   },
+
 
   sl: {
     library: 'Knjižnica',
@@ -328,10 +398,16 @@ let state = {
 
 
 try {
+
   Object.assign(
     state,
-    JSON.parse(localStorage.getItem('rb-state') || '{}')
+    JSON.parse(
+      localStorage.getItem(
+        'rb-state'
+      ) || '{}'
+    )
   );
+
 } catch (e) {}
 
 
@@ -339,62 +415,101 @@ if (!state.lang) {
   state.lang = 'en';
 }
 
+
 if (!Array.isArray(state.bookmarks)) {
   state.bookmarks = [];
 }
+
 
 if (!Array.isArray(state.sources)) {
   state.sources = [0, 1, 2, 3];
 }
 
+
 if (!Array.isArray(state.works)) {
   state.works = [];
 }
+
 
 state.lectureLength =
   String(
     state.lectureLength || '20'
   );
 
-if (typeof state.lectureTopic !== 'string') {
+
+if (
+  typeof state.lectureTopic !==
+  'string'
+) {
   state.lectureTopic = '';
 }
 
-if (typeof state.lectureGenerating !== 'boolean') {
+
+if (
+  typeof state.lectureGenerating !==
+  'boolean'
+) {
   state.lectureGenerating = false;
 }
 
-if (typeof state.generatedLecture !== 'string') {
+
+if (
+  typeof state.generatedLecture !==
+  'string'
+) {
   state.generatedLecture = '';
 }
 
-if (typeof state.lectureError !== 'string') {
+
+if (
+  typeof state.lectureError !==
+  'string'
+) {
   state.lectureError = '';
 }
+
 
 if (!Array.isArray(state.lecturePassages)) {
   state.lecturePassages = [];
 }
 
-if (typeof state.poemPrompt !== 'string') {
+
+if (
+  typeof state.poemPrompt !==
+  'string'
+) {
   state.poemPrompt = '';
 }
 
-if (typeof state.poemGenerating !== 'boolean') {
+
+if (
+  typeof state.poemGenerating !==
+  'boolean'
+) {
   state.poemGenerating = false;
 }
 
-if (typeof state.generatedPoem !== 'string') {
+
+if (
+  typeof state.generatedPoem !==
+  'string'
+) {
   state.generatedPoem = '';
 }
 
-if (typeof state.poemError !== 'string') {
+
+if (
+  typeof state.poemError !==
+  'string'
+) {
   state.poemError = '';
 }
+
 
 if (!Array.isArray(state.poemPassages)) {
   state.poemPassages = [];
 }
+
 
 if (
   state.creationType !== 'poem' &&
@@ -409,7 +524,24 @@ if (
    ========================================================= */
 
 function t(key) {
-  return I18N[state.lang]?.[key] || I18N.en[key] || key;
+
+  return (
+    I18N[state.lang]?.[key] ||
+    I18N.en[key] ||
+    key
+  );
+
+}
+
+
+function githubRawPdfUrl(filename) {
+
+  return (
+    'https://raw.githubusercontent.com/' +
+    'vcasopis/raganuga/main/books/' +
+    encodeURIComponent(filename)
+  );
+
 }
 
 
@@ -423,9 +555,15 @@ async function loadBooksFromGitHub() {
 
     const response =
       await fetch(
-        GITHUB_BOOKS_API,
+        GITHUB_BOOKS_API +
+          '?_=' +
+          Date.now(),
         {
-          cache: 'no-store'
+          cache: 'no-store',
+          headers: {
+            Accept:
+              'application/vnd.github+json'
+          }
         }
       );
 
@@ -447,71 +585,161 @@ async function loadBooksFromGitHub() {
     if (!Array.isArray(files)) {
 
       throw new Error(
-        'GitHub books folder did not return a file list.'
+        'GitHub API ni vrnil seznama datotek.'
       );
 
     }
 
 
-    BOOKS =
-      files
-        .filter(
-          file =>
-            file &&
-            file.type === 'file' &&
-            /\.pdf$/i.test(
-              file.name || ''
-            )
-        )
-        .map(
-          file => {
-
-            const title =
-              String(
-                file.name || ''
-              )
-              .replace(
-                /\.pdf$/i,
-                ''
-              );
+    const pdfFiles =
+      files.filter(
+        file =>
+          file &&
+          file.type === 'file' &&
+          /\.pdf$/i.test(
+            file.name || ''
+          )
+      );
 
 
-            return {
-
-              id:
-                'pdf-' +
-                encodeURIComponent(
-                  file.name
-                ),
-
-              short:
-                title,
-
-              author:
-                '',
-
-              script:
-                'PDF',
-
-              pdf:
-                file.download_url ||
-                (
-                  'https://raw.githubusercontent.com/' +
-                  'vcasopis/raganuga/main/books/' +
-                  encodeURIComponent(
-                    file.name
-                  )
-                )
-
-            };
-
-          }
-        );
+    const loadedBooks = [];
 
 
     /*
-     * Nova knjižnica je samodejna.
-     * Privzeto izberemo vse knjige za AI.
+     * STARE KNJIGE
+     *
+     * Za znane datoteke ohranimo stare naslove
+     * in avtorje.
+     */
+
+    LEGACY_BOOKS.forEach(
+      legacy => {
+
+        const file =
+          pdfFiles.find(
+            item =>
+              item.name ===
+              legacy.filename
+          );
+
+
+        if (!file) {
+          return;
+        }
+
+
+        loadedBooks.push({
+
+          id:
+            legacy.id,
+
+          short:
+            legacy.short,
+
+          author:
+            legacy.author,
+
+          script:
+            legacy.script,
+
+          pdf:
+            file.download_url ||
+            githubRawPdfUrl(
+              file.name
+            )
+
+        });
+
+      }
+    );
+
+
+    /*
+     * NOVE KNJIGE
+     *
+     * Vsak PDF, ki ni v starem seznamu,
+     * se samodejno doda.
+     */
+
+    pdfFiles.forEach(
+      file => {
+
+        const isLegacy =
+          LEGACY_BOOKS.some(
+            legacy =>
+              legacy.filename ===
+              file.name
+          );
+
+
+        if (isLegacy) {
+          return;
+        }
+
+
+        const title =
+          String(
+            file.name || ''
+          )
+          .replace(
+            /\.pdf$/i,
+            ''
+          );
+
+
+        loadedBooks.push({
+
+          id:
+            'pdf-' +
+            encodeURIComponent(
+              file.name
+            ),
+
+          short:
+            title,
+
+          author:
+            '',
+
+          script:
+            'PDF',
+
+          pdf:
+            file.download_url ||
+            githubRawPdfUrl(
+              file.name
+            )
+
+        });
+
+      }
+    );
+
+
+    /*
+     * Razvrstitev po naslovu.
+     */
+
+    BOOKS =
+      loadedBooks.sort(
+        (a, b) =>
+          String(
+            a.short || ''
+          ).localeCompare(
+            String(
+              b.short || ''
+            ),
+            undefined,
+            {
+              sensitivity:
+                'base'
+            }
+          )
+      );
+
+
+    /*
+     * Vse knjige so privzeto na voljo AI-ju.
      */
 
     state.sources =
@@ -524,26 +752,28 @@ async function loadBooksFromGitHub() {
 
 
     /*
-     * Če je trenutna knjiga izven novega seznama,
-     * jo vrnemo na prvo knjigo.
+     * Zagotovi veljaven trenutni indeks knjige.
      */
 
     if (
-      BOOKS.length === 0
+      BOOKS.length > 0
     ) {
-
-      state.book = 0;
-
-    } else {
 
       state.book =
         Math.max(
           0,
           Math.min(
-            Number(state.book) || 0,
+            Number(
+              state.book
+            ) || 0,
             BOOKS.length - 1
           )
         );
+
+    } else {
+
+      state.book =
+        0;
 
     }
 
@@ -553,20 +783,40 @@ async function loadBooksFromGitHub() {
 
 
     /*
-     * Če je uporabnik že na Search,
-     * pripravimo nov indeks.
+     * Če smo že na Search,
+     * indeks zgradimo na novo.
      */
 
     if (
-      state.screen === 'search'
+      state.screen ===
+      'search'
     ) {
 
-      state.searchReady = false;
-      state.searchIndex = [];
+      state.searchReady =
+        false;
+
+      state.searchIndex =
+        [];
 
       buildSearchIndex();
 
     }
+
+
+    console.log(
+      'Rāgānugā Library:',
+      BOOKS.length,
+      'books loaded.'
+    );
+
+
+    console.log(
+      'Rāgānugā Library PDF files:',
+      pdfFiles.map(
+        file =>
+          file.name
+      )
+    );
 
 
   } catch (error) {
@@ -577,16 +827,53 @@ async function loadBooksFromGitHub() {
     );
 
 
-    BOOKS = [];
+    /*
+     * Če GitHub API odpove,
+     * stare knjige vseeno ostanejo prikazane.
+     */
+
+    BOOKS =
+      LEGACY_BOOKS.map(
+        legacy => ({
+
+          id:
+            legacy.id,
+
+          short:
+            legacy.short,
+
+          author:
+            legacy.author,
+
+          script:
+            legacy.script,
+
+          pdf:
+            githubRawPdfUrl(
+              legacy.filename
+            )
+
+        })
+      );
 
 
+    state.sources =
+      BOOKS.map(
+        (
+          book,
+          index
+        ) => index
+      );
+
+
+    save();
     render();
 
 
     toast(
       state.lang === 'sl'
-        ? 'Knjig iz GitHuba ni bilo mogoče naložiti.'
-        : 'Could not load books from GitHub.'
+        ? 'Stare knjige so naložene; novih iz GitHuba trenutno ni bilo mogoče prebrati.'
+        : 'The existing books are loaded; new GitHub books could not be read.'
     );
 
   }
@@ -594,47 +881,105 @@ async function loadBooksFromGitHub() {
 }
 
 
+/* =========================================================
+   SAVE
+   ========================================================= */
+
 function save() {
+
   try {
 
     const savedState = {
-      screen: state.screen,
-      book: state.book,
-      query: state.query,
-      filter: state.filter,
-      form: state.form,
-      sources: state.sources,
-      script: state.script,
-      toast: state.toast,
-      working: state.working,
-      step: state.step,
-      intent: state.intent,
-      lang: state.lang,
-      loadedBook: state.loadedBook,
-      loadedBookId: state.loadedBookId,
-      chapter: state.chapter,
-      bookmarks: state.bookmarks,
 
-      lectureTopic: state.lectureTopic,
-      lectureLength: state.lectureLength,
-      generatedLecture: state.generatedLecture,
-      lectureError: state.lectureError,
-      lecturePassages: state.lecturePassages,
+      screen:
+        state.screen,
 
-      poemPrompt: state.poemPrompt,
-      generatedPoem: state.generatedPoem,
-      poemError: state.poemError,
-      poemPassages: state.poemPassages,
+      book:
+        state.book,
 
-      creationType: state.creationType,
+      query:
+        state.query,
 
-      works: state.works
+      filter:
+        state.filter,
+
+      form:
+        state.form,
+
+      sources:
+        state.sources,
+
+      script:
+        state.script,
+
+      toast:
+        state.toast,
+
+      working:
+        state.working,
+
+      step:
+        state.step,
+
+      intent:
+        state.intent,
+
+      lang:
+        state.lang,
+
+      loadedBook:
+        state.loadedBook,
+
+      loadedBookId:
+        state.loadedBookId,
+
+      chapter:
+        state.chapter,
+
+      bookmarks:
+        state.bookmarks,
+
+      lectureTopic:
+        state.lectureTopic,
+
+      lectureLength:
+        state.lectureLength,
+
+      generatedLecture:
+        state.generatedLecture,
+
+      lectureError:
+        state.lectureError,
+
+      lecturePassages:
+        state.lecturePassages,
+
+      poemPrompt:
+        state.poemPrompt,
+
+      generatedPoem:
+        state.generatedPoem,
+
+      poemError:
+        state.poemError,
+
+      poemPassages:
+        state.poemPassages,
+
+      creationType:
+        state.creationType,
+
+      works:
+        state.works
+
     };
 
 
     localStorage.setItem(
       'rb-state',
-      JSON.stringify(savedState)
+      JSON.stringify(
+        savedState
+      )
     );
 
   } catch (error) {
@@ -645,144 +990,279 @@ function save() {
     );
 
   }
+
 }
 
 
+/* =========================================================
+   ESCAPING
+   ========================================================= */
+
 function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+
+  return String(
+    value ?? ''
+  )
+    .replace(
+      /&/g,
+      '&amp;'
+    )
+    .replace(
+      /</g,
+      '&lt;'
+    )
+    .replace(
+      />/g,
+      '&gt;'
+    )
+    .replace(
+      /"/g,
+      '&quot;'
+    )
+    .replace(
+      /'/g,
+      '&#039;'
+    );
+
 }
 
 
 function escapeAttribute(value) {
-  return String(value ?? '')
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'");
+
+  return String(
+    value ?? ''
+  )
+    .replace(
+      /\\/g,
+      '\\\\'
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    );
+
 }
 
 
+/* =========================================================
+   LANGUAGE
+   ========================================================= */
+
 function setLanguage(lang) {
 
-  state.lang = lang;
+  state.lang =
+    lang;
+
 
   state.intent =
     lang === 'sl'
       ? I18N.sl.defaultIntent
       : I18N.en.defaultIntent;
 
+
   save();
   render();
+
 }
 
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 function go(screen) {
 
   if (
-    typeof searchFocusFrame !== 'undefined' &&
+    typeof searchFocusFrame !==
+      'undefined' &&
     searchFocusFrame !== null
   ) {
 
-    cancelAnimationFrame(searchFocusFrame);
-    searchFocusFrame = null;
+    cancelAnimationFrame(
+      searchFocusFrame
+    );
+
+    searchFocusFrame =
+      null;
 
   }
 
 
-  state.screen = screen;
+  state.screen =
+    screen;
+
 
   save();
   render();
 
+
   window.scrollTo({
+
     top: 0,
-    behavior: 'smooth'
+
+    behavior:
+      'smooth'
+
   });
+
 }
 
+
+/* =========================================================
+   TOAST
+   ========================================================= */
 
 function toast(message) {
 
-  state.toast = message;
+  state.toast =
+    message;
+
+
   render();
 
-  setTimeout(() => {
 
-    state.toast = '';
-    render();
+  setTimeout(
+    () => {
 
-  }, 1800);
+      state.toast =
+        '';
+
+      render();
+
+    },
+    1800
+  );
+
 }
 
+
+/* =========================================================
+   LANGUAGE SELECTOR
+   ========================================================= */
 
 function languageSelector() {
 
   return `
+
     <div class="language-selector">
 
       <button
         type="button"
-        class="chip ${state.lang === 'en' ? 'on' : ''}"
-        onclick="setLanguage('en')">
+        class="chip ${
+          state.lang === 'en'
+            ? 'on'
+            : ''
+        }"
+        onclick="
+          setLanguage('en')
+        ">
 
         🇬🇧 EN
 
       </button>
 
+
       <button
         type="button"
-        class="chip ${state.lang === 'sl' ? 'on' : ''}"
-        onclick="setLanguage('sl')">
+        class="chip ${
+          state.lang === 'sl'
+            ? 'on'
+            : ''
+        }"
+        onclick="
+          setLanguage('sl')
+        ">
 
         🇸🇮 SL
 
       </button>
 
     </div>
+
   `;
+
 }
 
+
+/* =========================================================
+   NAV
+   ========================================================= */
 
 function nav() {
 
   return `
+
     <nav class="nav">
 
       ${[
-        ['library', '▦', t('library')],
-        ['search', '⌕', t('search')],
-        ['create', '✦', t('create')],
-        ['saved', '♡', t('saved')]
-      ].map(
-        ([key, icon, label]) => `
+        [
+          'library',
+          '▦',
+          t('library')
+        ],
+        [
+          'search',
+          '⌕',
+          t('search')
+        ],
+        [
+          'create',
+          '✦',
+          t('create')
+        ],
+        [
+          'saved',
+          '♡',
+          t('saved')
+        ]
+      ]
+        .map(
+          (
+            [
+              key,
+              icon,
+              label
+            ]
+          ) => `
 
-          <button
-            type="button"
-            class="${state.screen === key ? 'active' : ''}"
-            onclick="go('${key}')">
+            <button
+              type="button"
+              class="${
+                state.screen === key
+                  ? 'active'
+                  : ''
+              }"
+              onclick="
+                go('${key}')
+              ">
 
-            ${icon}
+              ${icon}
 
-            <small>
-              ${label}
-            </small>
+              <small>
+                ${label}
+              </small>
 
-          </button>
+            </button>
 
-        `
-      ).join('')}
+          `
+        )
+        .join('')}
 
     </nav>
+
   `;
+
 }
 
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
 
 function layout(body) {
 
   return `
+
     <div class="shell">
 
       <main class="phone">
@@ -795,18 +1275,28 @@ function layout(body) {
 
         </div>
 
+
         ${nav()}
+
 
         ${
           state.toast
-            ? `<div class="toast">${escapeHtml(state.toast)}</div>`
+            ? `
+              <div class="toast">
+                ${escapeHtml(
+                  state.toast
+                )}
+              </div>
+            `
             : ''
         }
 
       </main>
 
     </div>
+
   `;
+
 }
 
 
@@ -821,6 +1311,7 @@ function library() {
     <div class="eyebrow">
       ${t('library')}
     </div>
+
 
     <h1>
       Rāgānugā Bhakti
@@ -841,8 +1332,13 @@ function library() {
           ${t('books')}
         </h3>
 
+
         <span class="muted">
-          ${BOOKS.length} ${t('titles')}
+
+          ${BOOKS.length}
+
+          ${t('titles')}
+
         </span>
 
       </div>
@@ -850,22 +1346,53 @@ function library() {
 
       ${
         BOOKS.length
+
           ? `
 
             <div class="grid">
 
               ${BOOKS.map(
-                (book, index) => `
+                (
+                  book,
+                  index
+                ) => `
 
                   <div
                     class="book"
-                    onclick="openBook(${index})">
+                    onclick="
+                      openBook(
+                        ${index}
+                      )
+                    ">
 
                     <div class="cover">
 
                       <strong>
-                        ${escapeHtml(book.short)}
+                        ${escapeHtml(
+                          book.short
+                        )}
                       </strong>
+
+
+                      ${
+                        book.author
+                          ? `
+                            <div
+                              class="muted"
+                              style="
+                                margin-top:8px;
+                                font-size:12px;
+                                line-height:1.4
+                              ">
+
+                              ${escapeHtml(
+                                book.author
+                              )}
+
+                            </div>
+                          `
+                          : ''
+                      }
 
                     </div>
 
@@ -877,11 +1404,14 @@ function library() {
             </div>
 
           `
+
           : `
 
             <div
               class="muted"
-              style="padding:20px 0">
+              style="
+                padding:20px 0
+              ">
 
               ${t('loading')}
 
@@ -893,6 +1423,7 @@ function library() {
     </div>
 
   `);
+
 }
 
 
@@ -902,10 +1433,16 @@ function library() {
 
 function openBook(index) {
 
-  state.book = index;
-  state.chapter = 0;
+  state.book =
+    index;
 
-  const book = BOOKS[index];
+  state.chapter =
+    0;
+
+
+  const book =
+    BOOKS[index];
+
 
   if (!book) {
     return;
@@ -913,22 +1450,30 @@ function openBook(index) {
 
 
   if (book.sample) {
+
     loadSampleBook();
+
     return;
+
   }
 
 
   if (
-    Array.isArray(book.pdfs) &&
+    Array.isArray(
+      book.pdfs
+    ) &&
     book.pdfs.length
   ) {
 
-    state.screen = 'reader';
+    state.screen =
+      'reader';
+
 
     save();
     render();
 
     return;
+
   }
 
 
@@ -936,21 +1481,32 @@ function openBook(index) {
 
     save();
 
+
     window.open(
       book.pdf,
       '_blank',
       'noopener,noreferrer'
     );
 
+
     return;
+
   }
 
 
   go('reader');
+
 }
 
 
-function openPdf(file, page) {
+/* =========================================================
+   OPEN PDF
+   ========================================================= */
+
+function openPdf(
+  file,
+  page
+) {
 
   if (!file) {
     return;
@@ -959,7 +1515,13 @@ function openPdf(file, page) {
 
   const target =
     page
-      ? file + '#page=' + encodeURIComponent(page)
+      ? (
+          file +
+          '#page=' +
+          encodeURIComponent(
+            page
+          )
+        )
       : file;
 
 
@@ -968,14 +1530,27 @@ function openPdf(file, page) {
     '_blank',
     'noopener,noreferrer'
   );
+
 }
 
 
+/* =========================================================
+   LOAD SAMPLE BOOK
+   ========================================================= */
+
 async function loadSampleBook() {
 
-  state.loadedBook = null;
-  state.loadedBookId = 'sample-book';
-  state.screen = 'reader';
+  state.loadedBook =
+    null;
+
+
+  state.loadedBookId =
+    'sample-book';
+
+
+  state.screen =
+    'reader';
+
 
   save();
   render();
@@ -1009,6 +1584,7 @@ async function loadSampleBook() {
     state.loadedBook =
       data;
 
+
     state.loadedBookId =
       data.id ||
       'sample-book';
@@ -1017,10 +1593,14 @@ async function loadSampleBook() {
     if (
       state.chapter < 0 ||
       state.chapter >=
-        (data.chapters || []).length
+        (
+          data.chapters ||
+          []
+        ).length
     ) {
 
-      state.chapter = 0;
+      state.chapter =
+        0;
 
     }
 
@@ -1040,6 +1620,7 @@ async function loadSampleBook() {
     state.loadedBook =
       FALLBACK_BOOK;
 
+
     state.loadedBookId =
       'sample-book';
 
@@ -1048,29 +1629,32 @@ async function loadSampleBook() {
     render();
 
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      toast(
-        t('loadingFailed')
-      );
+        toast(
+          t('loadingFailed')
+        );
 
-    }, 100);
+      },
+      100
+    );
 
   }
+
 }
 
 
+/* =========================================================
+   CURRENT BOOK
+   ========================================================= */
+
 function getCurrentBook() {
 
-  /*
-   * Sample book remains available only for old
-   * legacy bookmark/sample functionality.
-   *
-   * Real books are always taken from BOOKS.
-   */
-
   const meta =
-    BOOKS[state.book];
+    BOOKS[
+      state.book
+    ];
 
 
   if (!meta) {
@@ -1111,6 +1695,7 @@ function getCurrentBook() {
       []
 
   };
+
 }
 
 
@@ -1118,10 +1703,15 @@ function getCurrentBook() {
    PROGRESS
    ========================================================= */
 
-function getProgress(bookIndex) {
+function getProgress(
+  bookIndex
+) {
 
   const book =
-    BOOKS[bookIndex];
+    BOOKS[
+      bookIndex
+    ];
+
 
   if (!book) {
     return 0;
@@ -1144,6 +1734,7 @@ function getProgress(bookIndex) {
       value
     )
   );
+
 }
 
 
@@ -1157,16 +1748,21 @@ function setProgress(
       0,
       Math.min(
         100,
-        Math.round(value)
+        Math.round(
+          value
+        )
       )
     );
 
 
   localStorage.setItem(
     'rb-progress-' +
-    bookId,
-    String(safeValue)
+      bookId,
+    String(
+      safeValue
+    )
   );
+
 }
 
 
@@ -1178,8 +1774,11 @@ function updateReadingProgress() {
 
   if (
     !book ||
-    !Array.isArray(book.chapters) ||
-    book.chapters.length === 0
+    !Array.isArray(
+      book.chapters
+    ) ||
+    book.chapters.length ===
+      0
   ) {
 
     return;
@@ -1189,16 +1788,21 @@ function updateReadingProgress() {
 
   const progress =
     (
-      (state.chapter + 1) /
+      (
+        state.chapter +
+        1
+      ) /
       book.chapters.length
     ) *
     100;
 
 
   setProgress(
-    book.id || 'sample-book',
+    book.id ||
+      'sample-book',
     progress
   );
+
 }
 
 
@@ -1210,7 +1814,9 @@ function currentChapter() {
 
   if (
     !book ||
-    !Array.isArray(book.chapters)
+    !Array.isArray(
+      book.chapters
+    )
   ) {
 
     return null;
@@ -1219,9 +1825,12 @@ function currentChapter() {
 
 
   return (
-    book.chapters[state.chapter] ||
+    book.chapters[
+      state.chapter
+    ] ||
     null
   );
+
 }
 
 
@@ -1235,11 +1844,18 @@ function isBookmarked(ref) {
     bookmark =>
       bookmark.bookId ===
         state.loadedBookId &&
-      Number(bookmark.chapter) ===
-        Number(state.chapter) &&
-      String(bookmark.ref) ===
+      Number(
+        bookmark.chapter
+      ) ===
+        Number(
+          state.chapter
+        ) &&
+      String(
+        bookmark.ref
+      ) ===
         String(ref)
   );
+
 }
 
 
@@ -1250,9 +1866,15 @@ function toggleBookmark(ref) {
       bookmark =>
         bookmark.bookId ===
           state.loadedBookId &&
-        Number(bookmark.chapter) ===
-          Number(state.chapter) &&
-        String(bookmark.ref) ===
+        Number(
+          bookmark.chapter
+        ) ===
+          Number(
+            state.chapter
+          ) &&
+        String(
+          bookmark.ref
+        ) ===
           String(ref)
     );
 
@@ -1269,33 +1891,42 @@ function toggleBookmark(ref) {
     render();
 
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      toast(
-        t('removed')
-      );
+        toast(
+          t('removed')
+        );
 
-    }, 50);
+      },
+      50
+    );
 
 
     return;
+
   }
 
 
   const book =
     getCurrentBook();
 
+
   const chapter =
     currentChapter();
 
 
   const verse =
-    (chapter?.verses || [])
-      .find(
-        item =>
-          String(item.ref) ===
-          String(ref)
-      );
+    (
+      chapter?.verses ||
+      []
+    ).find(
+      item =>
+        String(
+          item.ref
+        ) ===
+        String(ref)
+    );
 
 
   state.bookmarks.push({
@@ -1351,20 +1982,25 @@ function toggleBookmark(ref) {
   render();
 
 
-  setTimeout(() => {
+  setTimeout(
+    () => {
 
-    toast(
-      t('bookmarked')
-    );
+      toast(
+        t('bookmarked')
+      );
 
-  }, 50);
+    },
+    50
+  );
+
 }
 
 
 function previousChapter() {
 
   if (
-    state.chapter > 0
+    state.chapter >
+    0
   ) {
 
     state.chapter--;
@@ -1374,11 +2010,18 @@ function previousChapter() {
     save();
     render();
 
+
     window.scrollTo({
+
       top: 0,
-      behavior: 'smooth'
+
+      behavior:
+        'smooth'
+
     });
+
   }
+
 }
 
 
@@ -1401,9 +2044,14 @@ function nextChapter() {
     save();
     render();
 
+
     window.scrollTo({
+
       top: 0,
-      behavior: 'smooth'
+
+      behavior:
+        'smooth'
+
     });
 
   } else {
@@ -1413,7 +2061,9 @@ function nextChapter() {
     toast(
       t('endSection')
     );
+
   }
+
 }
 
 
@@ -1424,7 +2074,9 @@ function nextChapter() {
 function reader() {
 
   const meta =
-    BOOKS[state.book];
+    BOOKS[
+      state.book
+    ];
 
 
   if (!meta) {
@@ -1434,6 +2086,7 @@ function reader() {
       <h2>
         ${t('reader')}
       </h2>
+
 
       <div class="muted">
         ${t('loading')}
@@ -1445,7 +2098,9 @@ function reader() {
 
 
   if (
-    Array.isArray(meta.pdfs) &&
+    Array.isArray(
+      meta.pdfs
+    ) &&
     meta.pdfs.length
   ) {
 
@@ -1456,20 +2111,30 @@ function reader() {
         <button
           type="button"
           class="back"
-          onclick="go('library')">
+          onclick="
+            go('library')
+          ">
 
           ‹
 
         </button>
 
+
         <div style="flex:1">
 
           <strong>
-            ${escapeHtml(meta.short)}
+            ${escapeHtml(
+              meta.short
+            )}
           </strong>
 
+
           <div class="muted">
-            ${escapeHtml(meta.author)}
+
+            ${escapeHtml(
+              meta.author
+            )}
+
           </div>
 
         </div>
@@ -1483,23 +2148,36 @@ function reader() {
           ${t('reader')}
         </div>
 
+
         <h2>
-          ${escapeHtml(meta.short)}
+          ${escapeHtml(
+            meta.short
+          )}
         </h2>
+
 
         <p class="muted">
 
-          ${escapeHtml(meta.author)}
+          ${escapeHtml(
+            meta.author
+          )}
 
           ·
 
-          ${escapeHtml(meta.script)}
+          ${escapeHtml(
+            meta.script
+          )}
 
         </p>
 
 
-        <h3 style="margin-top:24px">
+        <h3
+          style="
+            margin-top:24px
+          ">
+
           ${t('choosePart')}
+
         </h3>
 
 
@@ -1522,17 +2200,24 @@ function reader() {
                 "
                 onclick="
                   openPdf(
-                    '${escapeAttribute(part.file)}'
+                    '${escapeAttribute(
+                      part.file
+                    )}'
                   )
                 ">
 
                 <strong>
-                  ${escapeHtml(part.title)}
+                  ${escapeHtml(
+                    part.title
+                  )}
                 </strong>
+
 
                 <div
                   class="muted"
-                  style="margin-top:4px">
+                  style="
+                    margin-top:4px
+                  ">
 
                   PDF
 
@@ -1548,6 +2233,7 @@ function reader() {
       </div>
 
     `);
+
   }
 
 
@@ -1560,16 +2246,21 @@ function reader() {
         <button
           type="button"
           class="back"
-          onclick="go('library')">
+          onclick="
+            go('library')
+          ">
 
           ‹
 
         </button>
 
+
         <div style="flex:1">
 
           <strong>
-            ${escapeHtml(meta.short)}
+            ${escapeHtml(
+              meta.short
+            )}
           </strong>
 
         </div>
@@ -1583,9 +2274,27 @@ function reader() {
           ${t('reader')}
         </div>
 
+
         <h2>
-          ${escapeHtml(meta.short)}
+          ${escapeHtml(
+            meta.short
+          )}
         </h2>
+
+
+        ${
+          meta.author
+            ? `
+              <p class="muted">
+
+                ${escapeHtml(
+                  meta.author
+                )}
+
+              </p>
+            `
+            : ''
+        }
 
 
         <button
@@ -1593,7 +2302,9 @@ function reader() {
           class="primary"
           onclick="
             openPdf(
-              '${escapeAttribute(meta.pdf)}'
+              '${escapeAttribute(
+                meta.pdf
+              )}'
             )
           ">
 
@@ -1604,6 +2315,7 @@ function reader() {
       </div>
 
     `);
+
   }
 
 
@@ -1619,20 +2331,30 @@ function reader() {
         <button
           type="button"
           class="back"
-          onclick="go('library')">
+          onclick="
+            go('library')
+          ">
 
           ‹
 
         </button>
 
+
         <div style="flex:1">
 
           <strong>
-            ${escapeHtml(meta.short)}
+            ${escapeHtml(
+              meta.short
+            )}
           </strong>
 
+
           <div class="muted">
-            ${escapeHtml(meta.author)}
+
+            ${escapeHtml(
+              meta.author
+            )}
+
           </div>
 
         </div>
@@ -1644,22 +2366,33 @@ function reader() {
 
         <div class="dot"></div>
 
-        <h2 style="margin-top:20px">
+
+        <h2
+          style="
+            margin-top:20px
+          ">
+
           ${t('loading')}
+
         </h2>
 
+
         <div class="muted">
+
           data/sample-book.json
+
         </div>
 
       </div>
 
     `);
+
   }
 
 
   const book =
     getCurrentBook();
+
 
   const chapter =
     currentChapter();
@@ -1674,20 +2407,32 @@ function reader() {
         <button
           type="button"
           class="back"
-          onclick="go('library')">
+          onclick="
+            go('library')
+          ">
 
           ‹
 
         </button>
 
+
         <div style="flex:1">
 
           <strong>
-            ${escapeHtml(book?.title || '')}
+            ${escapeHtml(
+              book?.title ||
+              ''
+            )}
           </strong>
 
+
           <div class="muted">
-            ${escapeHtml(book?.author || '')}
+
+            ${escapeHtml(
+              book?.author ||
+              ''
+            )}
+
           </div>
 
         </div>
@@ -1696,10 +2441,13 @@ function reader() {
 
 
       <div class="muted">
+
         ${t('loading')}
+
       </div>
 
     `);
+
   }
 
 
@@ -1707,7 +2455,10 @@ function reader() {
     book.chapters.length
       ? Math.round(
           (
-            (state.chapter + 1) /
+            (
+              state.chapter +
+              1
+            ) /
             book.chapters.length
           ) *
           100
@@ -1722,7 +2473,9 @@ function reader() {
       <button
         type="button"
         class="back"
-        onclick="go('library')">
+        onclick="
+          go('library')
+        ">
 
         ‹
 
@@ -1732,11 +2485,18 @@ function reader() {
       <div style="flex:1">
 
         <strong>
-          ${escapeHtml(book.title)}
+          ${escapeHtml(
+            book.title
+          )}
         </strong>
 
+
         <div class="muted">
-          ${escapeHtml(book.author)}
+
+          ${escapeHtml(
+            book.author
+          )}
+
         </div>
 
       </div>
@@ -1744,14 +2504,23 @@ function reader() {
 
       <button
         type="button"
-        class="chip ${state.script ? 'on' : ''}"
+        class="chip ${
+          state.script
+            ? 'on'
+            : ''
+        }"
         onclick="
-          state.script=!state.script;
+          state.script =
+            !state.script;
           save();
           render();
         ">
 
-        ${state.script ? 'A अ' : 'A'}
+        ${
+          state.script
+            ? 'A अ'
+            : 'A'
+        }
 
       </button>
 
@@ -1769,11 +2538,15 @@ function reader() {
       <span>
 
         ${t('chapter')}
+
         ${state.chapter + 1}
+
         /
+
         ${book.chapters.length}
 
       </span>
+
 
       <span>
 
@@ -1786,24 +2559,35 @@ function reader() {
 
     <div
       class="progress"
-      style="margin-bottom:28px">
+      style="
+        margin-bottom:28px
+      ">
 
       <i
-        style="width:${progress}%">
+        style="
+          width:${progress}%
+        ">
       </i>
 
     </div>
 
 
     <h2>
-      ${escapeHtml(chapter.title)}
+
+      ${escapeHtml(
+        chapter.title
+      )}
+
     </h2>
 
 
     <div class="section">
 
       ${
-        (chapter.verses || [])
+        (
+          chapter.verses ||
+          []
+        )
           .map(
             verse => `
 
@@ -1811,9 +2595,12 @@ function reader() {
                 class="verse"
                 onclick="
                   toggleBookmark(
-                    '${escapeAttribute(verse.ref)}'
+                    '${escapeAttribute(
+                      verse.ref
+                    )}'
                   )
                 ">
+
 
                 <div
                   style="
@@ -1823,12 +2610,19 @@ function reader() {
                   ">
 
                   <div class="ref">
-                    ${escapeHtml(verse.ref)}
+
+                    ${escapeHtml(
+                      verse.ref
+                    )}
+
                   </div>
+
 
                   <div
                     class="muted"
-                    style="font-size:11px">
+                    style="
+                      font-size:11px
+                    ">
 
                     ${
                       isBookmarked(
@@ -1856,6 +2650,7 @@ function reader() {
 
                       </div>
 
+
                       <div class="translit">
 
                         ${escapeHtml(
@@ -1873,12 +2668,15 @@ function reader() {
                 <div class="english">
 
                   ${
-                    state.lang === 'sl'
+                    state.lang ===
+                    'sl'
+
                       ? escapeHtml(
                           verse.slovenian ||
                           verse.english ||
                           ''
                         )
+
                       : escapeHtml(
                           verse.english ||
                           ''
@@ -1891,6 +2689,7 @@ function reader() {
                 ${
                   verse.note
                     ? `
+
                       <div class="note">
 
                         ${escapeHtml(
@@ -1898,6 +2697,7 @@ function reader() {
                         )}
 
                       </div>
+
                     `
                     : ''
                 }
@@ -1927,9 +2727,12 @@ function reader() {
           flex:1;
           padding:12px
         "
-        onclick="previousChapter()">
+        onclick="
+          previousChapter()
+        ">
 
-        ‹ ${t('previous')}
+        ‹
+        ${t('previous')}
 
       </button>
 
@@ -1941,9 +2744,12 @@ function reader() {
           flex:1;
           padding:12px
         "
-        onclick="nextChapter()">
+        onclick="
+          nextChapter()
+        ">
 
-        ${t('next')} ›
+        ${t('next')}
+        ›
 
       </button>
 
@@ -1970,6 +2776,7 @@ function reader() {
     </div>
 
   `);
+
 }
 
 
@@ -1980,24 +2787,35 @@ function reader() {
 const PDFJS_VERSION =
   '6.2.108';
 
+
 const SEARCH_DB_NAME =
   'raganuga-search-db';
+
 
 const SEARCH_DB_VERSION =
   1;
 
+
 const SEARCH_STORE_NAME =
   'pages';
 
-let pdfjsPromise = null;
 
-let searchFocusFrame = null;
+let pdfjsPromise =
+  null;
+
+
+let searchFocusFrame =
+  null;
 
 
 function normalizeSearchText(value) {
 
-  return String(value || '')
-    .normalize('NFD')
+  return String(
+    value || ''
+  )
+    .normalize(
+      'NFD'
+    )
     .replace(
       /[\u0300-\u036f]/g,
       ''
@@ -2025,8 +2843,13 @@ function makeSearchSnippet(result) {
 
 
   const text =
-    String(source)
-      .replace(/\s+/g, ' ')
+    String(
+      source
+    )
+      .replace(
+        /\s+/g,
+        ' '
+      )
       .trim();
 
 
@@ -2053,7 +2876,9 @@ function makeSearchSnippet(result) {
 
   const pos =
     query
-      ? normalized.indexOf(query)
+      ? normalized.indexOf(
+          query
+        )
       : -1;
 
 
@@ -2074,23 +2899,39 @@ function makeSearchSnippet(result) {
 
 
     return (
-      (start > 0 ? '…' : '') +
+      (
+        start > 0
+          ? '…'
+          : ''
+      ) +
       text.slice(
         start,
         end
       ) +
-      (end < text.length ? '…' : '')
+      (
+        end < text.length
+          ? '…'
+          : ''
+      )
     );
 
   }
 
 
   return (
-    text.slice(0, 320) +
+    text.slice(
+      0,
+      320
+    ) +
     '…'
   );
+
 }
 
+
+/* =========================================================
+   PDF ENTRIES
+   ========================================================= */
 
 function getPdfEntries() {
 
@@ -2123,11 +2964,14 @@ function getPdfEntries() {
 
 
         return;
+
       }
 
 
       if (
-        Array.isArray(book.pdfs)
+        Array.isArray(
+          book.pdfs
+        )
       ) {
 
         book.pdfs.forEach(
@@ -2157,6 +3001,7 @@ function getPdfEntries() {
 
           }
         );
+
       }
 
     }
@@ -2164,8 +3009,13 @@ function getPdfEntries() {
 
 
   return entries;
+
 }
 
+
+/* =========================================================
+   PDF.JS
+   ========================================================= */
 
 async function getPdfJs() {
 
@@ -2187,24 +3037,37 @@ async function getPdfJs() {
               PDFJS_VERSION +
               '/build/pdf.worker.min.mjs';
 
+
           return pdfjsLib;
 
         }
       );
+
   }
 
 
   return pdfjsPromise;
+
 }
 
+
+/* =========================================================
+   SEARCH DATABASE
+   ========================================================= */
 
 function openSearchDatabase() {
 
   return new Promise(
-    (resolve, reject) => {
+    (
+      resolve,
+      reject
+    ) => {
 
       if (
-        !('indexedDB' in window)
+        !(
+          'indexedDB' in
+          window
+        )
       ) {
 
         reject(
@@ -2212,6 +3075,7 @@ function openSearchDatabase() {
             'IndexedDB ni podprt v tem brskalniku.'
           )
         );
+
 
         return;
 
@@ -2242,7 +3106,8 @@ function openSearchDatabase() {
               db.createObjectStore(
                 SEARCH_STORE_NAME,
                 {
-                  keyPath: 'id'
+                  keyPath:
+                    'id'
                 }
               );
 
@@ -2251,7 +3116,8 @@ function openSearchDatabase() {
               'bookId',
               'bookId',
               {
-                unique: false
+                unique:
+                  false
               }
             );
 
@@ -2260,7 +3126,8 @@ function openSearchDatabase() {
               'pdf',
               'pdf',
               {
-                unique: false
+                unique:
+                  false
               }
             );
 
@@ -2293,6 +3160,7 @@ function openSearchDatabase() {
 
     }
   );
+
 }
 
 
@@ -2303,7 +3171,10 @@ function clearSearchDatabase() {
       db => {
 
         return new Promise(
-          (resolve, reject) => {
+          (
+            resolve,
+            reject
+          ) => {
 
             const transaction =
               db.transaction(
@@ -2350,6 +3221,7 @@ function clearSearchDatabase() {
 
       }
     );
+
 }
 
 
@@ -2360,7 +3232,10 @@ function loadCachedSearchIndex() {
       db => {
 
         return new Promise(
-          (resolve, reject) => {
+          (
+            resolve,
+            reject
+          ) => {
 
             const transaction =
               db.transaction(
@@ -2414,6 +3289,7 @@ function loadCachedSearchIndex() {
 
       }
     );
+
 }
 
 
@@ -2424,7 +3300,10 @@ function saveSearchRows(rows) {
       db => {
 
         return new Promise(
-          (resolve, reject) => {
+          (
+            resolve,
+            reject
+          ) => {
 
             const transaction =
               db.transaction(
@@ -2454,6 +3333,7 @@ function saveSearchRows(rows) {
               function () {
 
                 db.close();
+
                 resolve();
 
               };
@@ -2476,8 +3356,13 @@ function saveSearchRows(rows) {
 
       }
     );
+
 }
 
+
+/* =========================================================
+   SEARCH ROW
+   ========================================================= */
 
 function makeSearchRow(
   bookId,
@@ -2490,8 +3375,13 @@ function makeSearchRow(
 ) {
 
   const cleanText =
-    String(text || '')
-      .replace(/\s+/g, ' ')
+    String(
+      text || ''
+    )
+      .replace(
+        /\s+/g,
+        ' '
+      )
       .trim();
 
 
@@ -2549,8 +3439,13 @@ function makeSearchRow(
       )
 
   };
+
 }
 
+
+/* =========================================================
+   BUILD PDF SEARCH INDEX
+   ========================================================= */
 
 async function buildPdfSearchIndex() {
 
@@ -2565,17 +3460,21 @@ async function buildPdfSearchIndex() {
   const rows = [];
 
 
-  let totalPages = 0;
+  let totalPages =
+    0;
 
 
   for (
     let bookNumber = 0;
-    bookNumber < entries.length;
+    bookNumber <
+      entries.length;
     bookNumber++
   ) {
 
     const entry =
-      entries[bookNumber];
+      entries[
+        bookNumber
+      ];
 
 
     const loadingTask =
@@ -2600,7 +3499,8 @@ async function buildPdfSearchIndex() {
 
     for (
       let pageNumber = 1;
-      pageNumber <= pdf.numPages;
+      pageNumber <=
+        pdf.numPages;
       pageNumber++
     ) {
 
@@ -2618,10 +3518,14 @@ async function buildPdfSearchIndex() {
         content.items
           .map(
             item =>
-              item.str || ''
+              item.str ||
+              ''
           )
           .join(' ')
-          .replace(/\s+/g, ' ')
+          .replace(
+            /\s+/g,
+            ' '
+          )
           .trim();
 
 
@@ -2645,7 +3549,8 @@ async function buildPdfSearchIndex() {
       if (
         pageNumber === 1 ||
         pageNumber % 25 === 0 ||
-        pageNumber === pdf.numPages
+        pageNumber ===
+          pdf.numPages
       ) {
 
         state.searchIndex =
@@ -2653,7 +3558,8 @@ async function buildPdfSearchIndex() {
 
 
         if (
-          state.screen === 'search'
+          state.screen ===
+          'search'
         ) {
 
           render();
@@ -2681,8 +3587,13 @@ async function buildPdfSearchIndex() {
     totalPages
 
   };
+
 }
 
+
+/* =========================================================
+   BUILD SEARCH INDEX
+   ========================================================= */
 
 async function buildSearchIndex() {
 
@@ -2701,7 +3612,8 @@ async function buildSearchIndex() {
 
 
   if (
-    state.screen === 'search'
+    state.screen ===
+    'search'
   ) {
 
     render();
@@ -2720,7 +3632,8 @@ async function buildSearchIndex() {
         await fetch(
           'data/sample-book.json',
           {
-            cache: 'no-store'
+            cache:
+              'no-store'
           }
         );
 
@@ -2739,14 +3652,20 @@ async function buildSearchIndex() {
         await response.json();
 
 
-      (book.chapters || [])
+      (
+        book.chapters ||
+        []
+      )
         .forEach(
           (
             chapter,
             chapterIndex
           ) => {
 
-            (chapter.verses || [])
+            (
+              chapter.verses ||
+              []
+            )
               .forEach(
                 verse => {
 
@@ -2819,14 +3738,20 @@ async function buildSearchIndex() {
         FALLBACK_BOOK;
 
 
-      (book.chapters || [])
+      (
+        book.chapters ||
+        []
+      )
         .forEach(
           (
             chapter,
             chapterIndex
           ) => {
 
-            (chapter.verses || [])
+            (
+              chapter.verses ||
+              []
+            )
               .forEach(
                 verse => {
 
@@ -2896,7 +3821,8 @@ async function buildSearchIndex() {
     }
 
 
-    let cachedRows = [];
+    let cachedRows =
+      [];
 
 
     try {
@@ -2952,13 +3878,18 @@ async function buildSearchIndex() {
       expectedPdfCount > 0 &&
       cachedPdfIds.size ===
         expectedPdfIds.size &&
-      [...expectedPdfIds].every(
+      [
+        ...expectedPdfIds
+      ].every(
         id =>
-          cachedPdfIds.has(id)
+          cachedPdfIds.has(
+            id
+          )
       );
 
 
-    let pdfRows = [];
+    let pdfRows =
+      [];
 
 
     if (cacheComplete) {
@@ -3043,6 +3974,7 @@ async function buildSearchIndex() {
     state.searchIndex =
       [];
 
+
     state.searchReady =
       false;
 
@@ -3053,7 +3985,6 @@ async function buildSearchIndex() {
         : 'Could not prepare the library search.'
     );
 
-
   } finally {
 
     state.searchLoading =
@@ -3061,7 +3992,8 @@ async function buildSearchIndex() {
 
 
     if (
-      state.screen === 'search'
+      state.screen ===
+      'search'
     ) {
 
       render();
@@ -3069,6 +4001,7 @@ async function buildSearchIndex() {
     }
 
   }
+
 }
 
 
@@ -3086,7 +4019,8 @@ function setSearchQuery(value) {
 
 
   if (
-    searchFocusFrame !== null
+    searchFocusFrame !==
+    null
   ) {
 
     cancelAnimationFrame(
@@ -3109,7 +4043,8 @@ function setSearchQuery(value) {
 
 
         if (
-          state.screen !== 'search'
+          state.screen !==
+          'search'
         ) {
 
           return;
@@ -3141,13 +4076,17 @@ function setSearchQuery(value) {
 
       }
     );
+
 }
 
 
-function setSearchFilter(value) {
+function setSearchFilter(
+  value
+) {
 
   state.filter =
     value;
+
 
   save();
   render();
@@ -3215,8 +4154,13 @@ function getVisibleSearchResults() {
 
 
   return results;
+
 }
 
+
+/* =========================================================
+   SEARCH SCREEN
+   ========================================================= */
 
 function search() {
 
@@ -3264,8 +4208,12 @@ function search() {
 
         ${
           state.searchLoading
-            ? t('preparingSearch')
-            : t('searching')
+            ? t(
+                'preparingSearch'
+              )
+            : t(
+                'searching'
+              )
         }
 
       </div>
@@ -3274,14 +4222,21 @@ function search() {
       ${
         state.searchIndex.length
           ? `
+
             <div
               class="muted"
-              style="margin-top:10px">
+              style="
+                margin-top:10px
+              ">
 
               ${state.searchIndex.length}
-              ${t('pagesIndexed')}
+
+              ${t(
+                'pagesIndexed'
+              )}
 
             </div>
+
           `
           : ''
       }
@@ -3324,7 +4279,9 @@ function search() {
         margin-bottom:16px
       ">
 
-      ${t('searchHint')}
+      ${t(
+        'searchHint'
+      )}
 
     </div>
 
@@ -3332,34 +4289,54 @@ function search() {
     <div class="chips">
 
       ${[
-        ['All books', t('allBooks')],
-        ['English', 'English'],
-        ['Slovenian', 'Slovenščina'],
-        ['Sanskrit', 'Sanskrit']
-      ].map(
-        ([value, label]) => `
+        [
+          'All books',
+          t('allBooks')
+        ],
+        [
+          'English',
+          'English'
+        ],
+        [
+          'Slovenian',
+          'Slovenščina'
+        ],
+        [
+          'Sanskrit',
+          'Sanskrit'
+        ]
+      ]
+        .map(
+          (
+            [
+              value,
+              label
+            ]
+          ) => `
 
-          <button
-            type="button"
-            class="chip ${
-              state.filter === value
-                ? 'on'
-                : ''
-            }"
-            onclick="
-              setSearchFilter(
-                '${escapeAttribute(
-                  value
-                )}'
-              )
-            ">
+            <button
+              type="button"
+              class="chip ${
+                state.filter ===
+                value
+                  ? 'on'
+                  : ''
+              }"
+              onclick="
+                setSearchFilter(
+                  '${escapeAttribute(
+                    value
+                  )}'
+                )
+              ">
 
-            ${label}
+              ${label}
 
-          </button>
+            </button>
 
-        `
-      ).join('')}
+          `
+        )
+        .join('')}
 
     </div>
 
@@ -3371,15 +4348,22 @@ function search() {
       ">
 
       ${results.length}
-      ${t('passages')}
+
+      ${t(
+        'passages'
+      )}
 
     </div>
 
 
     ${
       results.length
+
         ? results
-            .slice(0, 100)
+            .slice(
+              0,
+              100
+            )
             .map(
               (
                 result,
@@ -3415,9 +4399,11 @@ function search() {
 
                     ${
                       result.pdf
+
                         ? escapeHtml(
                             result.chapterTitle
                           )
+
                         : (
                             escapeHtml(
                               t(
@@ -3458,6 +4444,7 @@ function search() {
 
                   ${
                     result.pdf
+
                       ? `
 
                         <button
@@ -3468,6 +4455,7 @@ function search() {
                           "
                           onclick="
                             event.stopPropagation();
+
                             openPdf(
                               '${escapeAttribute(
                                 result.pdf
@@ -3476,14 +4464,19 @@ function search() {
                                 result.page
                               )}
                             );
+
                           ">
 
-                          ${t('openPage')}
+                          ${t(
+                            'openPage'
+                          )}
 
                         </button>
 
                       `
+
                       : `
+
                         <div
                           class="muted"
                           style="
@@ -3496,6 +4489,7 @@ function search() {
                           )}
 
                         </div>
+
                       `
                   }
 
@@ -3508,7 +4502,11 @@ function search() {
         : `
 
           <div class="muted">
-            ${t('noResults')}
+
+            ${t(
+              'noResults'
+            )}
+
           </div>
 
         `
@@ -3528,8 +4526,18 @@ function search() {
 
             ${
               state.lang === 'sl'
-                ? `Prikazanih je prvih 100 zadetkov od ${results.length}.`
-                : `Showing the first 100 results of ${results.length}.`
+
+                ? `
+                  Prikazanih je prvih 100
+                  zadetkov od
+                  ${results.length}.
+                `
+
+                : `
+                  Showing the first 100
+                  results of
+                  ${results.length}.
+                `
             }
 
           </div>
@@ -3539,17 +4547,26 @@ function search() {
     }
 
   `);
+
 }
 
 
-function openSearchResult(index) {
+/* =========================================================
+   OPEN SEARCH RESULT
+   ========================================================= */
+
+function openSearchResult(
+  index
+) {
 
   const visibleResults =
     getVisibleSearchResults();
 
 
   const result =
-    visibleResults[index];
+    visibleResults[
+      index
+    ];
 
 
   if (!result) {
@@ -3573,6 +4590,7 @@ function openSearchResult(index) {
 
 
     return;
+
   }
 
 
@@ -3639,10 +4657,17 @@ function openSearchResult(index) {
     );
 
   }
+
 }
 
 
-function scrollToVerse(ref) {
+/* =========================================================
+   SCROLL TO VERSE
+   ========================================================= */
+
+function scrollToVerse(
+  ref
+) {
 
   setTimeout(
     () => {
@@ -3654,7 +4679,8 @@ function scrollToVerse(ref) {
 
 
       for (
-        const verse of verses
+        const verse of
+        verses
       ) {
 
         const reference =
@@ -3671,8 +4697,13 @@ function scrollToVerse(ref) {
         ) {
 
           verse.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
+
+            behavior:
+              'smooth',
+
+            block:
+              'center'
+
           });
 
 
@@ -3700,6 +4731,7 @@ function scrollToVerse(ref) {
     },
     150
   );
+
 }
 
 
@@ -3707,16 +4739,21 @@ function scrollToVerse(ref) {
    AI SOURCE SELECTION
    ========================================================= */
 
-function toggleLectureSource(index) {
+function toggleLectureSource(
+  index
+) {
 
   if (
-    state.sources.includes(index)
+    state.sources.includes(
+      index
+    )
   ) {
 
     state.sources =
       state.sources.filter(
         item =>
-          item !== index
+          item !==
+          index
       );
 
   } else {
@@ -3731,34 +4768,47 @@ function toggleLectureSource(index) {
 
   save();
   render();
+
 }
 
 
-function setLectureTopic(value) {
+function setLectureTopic(
+  value
+) {
 
   state.lectureTopic =
     value;
 
+
   save();
+
 }
 
 
-function setLectureLength(value) {
+function setLectureLength(
+  value
+) {
 
   state.lectureLength =
     String(value);
 
+
   save();
   render();
+
 }
 
 
-function setPoemPrompt(value) {
+function setPoemPrompt(
+  value
+) {
 
   state.poemPrompt =
     value;
 
+
   save();
+
 }
 
 
@@ -3773,7 +4823,8 @@ function findAiPassages(
   const normalizedInstruction =
     normalizeSearchText(
       String(
-        instructionText || ''
+        instructionText ||
+        ''
       ).trim()
     );
 
@@ -3783,7 +4834,9 @@ function findAiPassages(
       state.sources
         .map(
           index =>
-            BOOKS[index]?.id
+            BOOKS[
+              index
+            ]?.id
         )
         .filter(Boolean)
     );
@@ -3838,14 +4891,17 @@ function findAiPassages(
           );
 
 
-        let score = 0;
+        let score =
+          0;
 
 
         words.forEach(
           word => {
 
             if (
-              text.includes(word)
+              text.includes(
+                word
+              )
             ) {
 
               score += 1;
@@ -3870,13 +4926,15 @@ function findAiPassages(
 
         const titleText =
           normalizeSearchText(
-            row.bookTitle || ''
+            row.bookTitle ||
+            ''
           );
 
 
         const authorText =
           normalizeSearchText(
-            row.author || ''
+            row.author ||
+            ''
           );
 
 
@@ -3925,10 +4983,14 @@ function findAiPassages(
     candidates
       .filter(
         row =>
-          row.aiScore > 0
+          row.aiScore >
+          0
       )
       .sort(
-        (a, b) => {
+        (
+          a,
+          b
+        ) => {
 
           if (
             b.aiScore !==
@@ -3944,8 +5006,14 @@ function findAiPassages(
 
 
           return (
-            Number(a.page || 0) -
-            Number(b.page || 0)
+            Number(
+              a.page ||
+              0
+            ) -
+            Number(
+              b.page ||
+              0
+            )
           );
 
         }
@@ -3953,7 +5021,10 @@ function findAiPassages(
 
 
   return candidates
-    .slice(0, 24)
+    .slice(
+      0,
+      24
+    )
     .map(
       row => {
 
@@ -3963,16 +5034,23 @@ function findAiPassages(
             row.english ||
             ''
           )
-          .replace(/\s+/g, ' ')
-          .trim();
+            .replace(
+              /\s+/g,
+              ' '
+            )
+            .trim();
 
 
         const text =
-          rawText.length > 2600
+          rawText.length >
+          2600
+
             ? rawText.slice(
                 0,
                 2600
-              ) + '…'
+              ) +
+              '…'
+
             : rawText;
 
 
@@ -3996,6 +5074,7 @@ function findAiPassages(
 
       }
     );
+
 }
 
 
@@ -4003,7 +5082,9 @@ function findAiPassages(
    SAVE GENERATED WORK
    ========================================================= */
 
-function saveGeneratedWork(work) {
+function saveGeneratedWork(
+  work
+) {
 
   const item = {
 
@@ -4013,7 +5094,10 @@ function saveGeneratedWork(work) {
       '-' +
       Math.random()
         .toString(36)
-        .slice(2, 8),
+        .slice(
+          2,
+          8
+        ),
 
     type:
       work.type,
@@ -4021,9 +5105,14 @@ function saveGeneratedWork(work) {
     title:
       work.title ||
       (
-        work.type === 'poem'
-          ? t('aiPoem')
-          : t('aiLecture')
+        work.type ===
+        'poem'
+          ? t(
+              'aiPoem'
+            )
+          : t(
+              'aiLecture'
+            )
       ),
 
     prompt:
@@ -4043,7 +5132,9 @@ function saveGeneratedWork(work) {
       '',
 
     passages:
-      Array.isArray(work.passages)
+      Array.isArray(
+        work.passages
+      )
         ? work.passages
         : [],
 
@@ -4055,13 +5146,12 @@ function saveGeneratedWork(work) {
 
   state.works = [
     item,
-    ...state.works
-      .filter(
-        existing =>
-          existing &&
-          existing.id !==
-            item.id
-      )
+    ...state.works.filter(
+      existing =>
+        existing &&
+        existing.id !==
+          item.id
+    )
   ];
 
 
@@ -4074,9 +5164,15 @@ function saveGeneratedWork(work) {
 
   save();
 
+
   return item;
+
 }
 
+
+/* =========================================================
+   WORK DATE
+   ========================================================= */
 
 function formatWorkDate(
   value
@@ -4096,8 +5192,11 @@ function formatWorkDate(
         ? 'sl-SI'
         : 'en-US',
       {
-        dateStyle: 'medium',
-        timeStyle: 'short'
+        dateStyle:
+          'medium',
+
+        timeStyle:
+          'short'
       }
     );
 
@@ -4114,10 +5213,15 @@ function formatWorkDate(
    DOWNLOAD GENERATED WORK
    ========================================================= */
 
-function downloadSavedWork(index) {
+function downloadSavedWork(
+  index
+) {
 
   const work =
-    state.works[index];
+    state.works[
+      index
+    ];
+
 
   if (!work) {
     return;
@@ -4125,18 +5229,23 @@ function downloadSavedWork(index) {
 
 
   const isPoem =
-    work.type === 'poem';
+    work.type ===
+    'poem';
 
 
   const typeLabel =
     isPoem
+
       ? (
-          state.lang === 'sl'
+          state.lang ===
+          'sl'
             ? 'AI pesem'
             : 'AI Poem'
         )
+
       : (
-          state.lang === 'sl'
+          state.lang ===
+          'sl'
             ? 'AI predavanje'
             : 'AI Lecture'
         );
@@ -4147,7 +5256,7 @@ function downloadSavedWork(index) {
       work.title ||
       typeLabel
     )
-    .trim();
+      .trim();
 
 
   const prompt =
@@ -4155,7 +5264,7 @@ function downloadSavedWork(index) {
       work.prompt ||
       ''
     )
-    .trim();
+      .trim();
 
 
   const content =
@@ -4163,27 +5272,33 @@ function downloadSavedWork(index) {
       work.content ||
       ''
     )
-    .trim();
+      .trim();
 
 
-  function decodeHtmlEntities(value) {
+  function decodeHtmlEntities(
+    value
+  ) {
 
     const textarea =
       document.createElement(
         'textarea'
       );
 
+
     textarea.innerHTML =
       String(
         value ?? ''
       );
+
 
     return textarea.value;
 
   }
 
 
-  function escapeHtml(value) {
+  function escapeHtml(
+    value
+  ) {
 
     return String(
       value ?? ''
@@ -4212,7 +5327,9 @@ function downloadSavedWork(index) {
   }
 
 
-  function markdownToHtml(text) {
+  function markdownToHtml(
+    text
+  ) {
 
     const decoded =
       decodeHtmlEntities(
@@ -4288,13 +5405,17 @@ function downloadSavedWork(index) {
         block => {
 
           if (
-            block.startsWith('<h1>')
-            ||
-            block.startsWith('<h2>')
-            ||
-            block.startsWith('<h3>')
-            ||
-            block === '<hr>'
+            block.startsWith(
+              '<h1>'
+            ) ||
+            block.startsWith(
+              '<h2>'
+            ) ||
+            block.startsWith(
+              '<h3>'
+            ) ||
+            block ===
+              '<hr>'
           ) {
 
             return block;
@@ -4314,7 +5435,9 @@ function downloadSavedWork(index) {
 
         }
       )
-      .join('\n');
+      .join(
+        '\n'
+      );
 
   }
 
@@ -4339,23 +5462,23 @@ function downloadSavedWork(index) {
     )
       ? work.passages
           .map(
-            (
-              passage,
-              sourceIndex
-            ) => {
+            passage => {
 
               const book =
                 passage.bookTitle ||
                 '';
 
+
               const author =
                 passage.author ||
                 '';
 
+
               const page =
                 passage.page
                   ? (
-                      state.lang === 'sl'
+                      state.lang ===
+                      'sl'
                         ? ` · stran ${passage.page}`
                         : ` · page ${passage.page}`
                     )
@@ -4364,19 +5487,28 @@ function downloadSavedWork(index) {
 
               return `
                 <li>
-                  ${escapeHtml(book)}
+                  ${escapeHtml(
+                    book
+                  )}
+
                   ${
                     author
-                      ? ` — ${escapeHtml(author)}`
+                      ? ` — ${escapeHtml(
+                          author
+                        )}`
                       : ''
                   }
+
                   ${page}
+
                 </li>
               `;
 
             }
           )
-          .join('\n')
+          .join(
+            '\n'
+          )
       : '';
 
 
@@ -4436,7 +5568,9 @@ function downloadSavedWork(index) {
 >
 
 <title>
-  ${escapeHtml(title)}
+  ${escapeHtml(
+    title
+  )}
 </title>
 
 
@@ -4445,11 +5579,13 @@ function downloadSavedWork(index) {
   href="https://fonts.googleapis.com"
 >
 
+
 <link
   rel="preconnect"
   href="https://fonts.gstatic.com"
   crossorigin
 >
+
 
 <link
   href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
@@ -4468,7 +5604,8 @@ function downloadSavedWork(index) {
 
     margin: 0;
 
-    padding: 40px 20px;
+    padding:
+      40px 20px;
 
     background:
       #f5f2eb;
@@ -4748,14 +5885,20 @@ function downloadSavedWork(index) {
 
 
   <h1>
-    ${escapeHtml(title)}
+    ${escapeHtml(
+      title
+    )}
   </h1>
 
 
   <div class="meta">
 
     <strong>
-      ${escapeHtml(typeLabel)}
+
+      ${escapeHtml(
+        typeLabel
+      )}
+
     </strong>
 
   </div>
@@ -4764,23 +5907,32 @@ function downloadSavedWork(index) {
   ${
     work.length
       ? `
+
         <div class="meta">
 
           <strong>
-            ${escapeHtml(durationLabel)}:
+
+            ${escapeHtml(
+              durationLabel
+            )}:
+
           </strong>
+
 
           ${escapeHtml(
             work.length
           )}
 
+
           ${
-            state.lang === 'sl'
+            state.lang ===
+            'sl'
               ? ' minut'
               : ' minutes'
           }
 
         </div>
+
       `
       : ''
   }
@@ -4792,10 +5944,16 @@ function downloadSavedWork(index) {
 
         <div
           class="meta"
-          style="margin-top:20px">
+          style="
+            margin-top:20px
+          ">
 
           <strong>
-            ${escapeHtml(promptLabel)}:
+
+            ${escapeHtml(
+              promptLabel
+            )}:
+
           </strong>
 
         </div>
@@ -4825,23 +5983,35 @@ function downloadSavedWork(index) {
   <section class="sources">
 
     <h2>
-      ${escapeHtml(sourcesLabel)}
+
+      ${escapeHtml(
+        sourcesLabel
+      )}
+
     </h2>
 
 
     ${
       sourceList
         ? `
+
           <ul>
+
             ${sourceList}
+
           </ul>
+
         `
         : `
+
           <p>
+
             ${escapeHtml(
               noSources
             )}
+
           </p>
+
         `
     }
 
@@ -4850,12 +6020,18 @@ function downloadSavedWork(index) {
 
   <div
     class="meta"
-    style="margin-top:30px"
-  >
+    style="
+      margin-top:30px
+    ">
 
     <strong>
-      ${escapeHtml(createdLabel)}:
+
+      ${escapeHtml(
+        createdLabel
+      )}:
+
     </strong>
+
 
     ${escapeHtml(
       formatWorkDate(
@@ -4961,10 +6137,14 @@ function downloadSavedWork(index) {
    OPEN / DELETE SAVED WORK
    ========================================================= */
 
-function openSavedWork(index) {
+function openSavedWork(
+  index
+) {
 
   const work =
-    state.works[index];
+    state.works[
+      index
+    ];
 
 
   if (!work) {
@@ -4973,19 +6153,23 @@ function openSavedWork(index) {
 
 
   if (
-    work.type === 'poem'
+    work.type ===
+    'poem'
   ) {
 
     state.creationType =
       'poem';
 
+
     state.poemPrompt =
       work.prompt ||
       '';
 
+
     state.generatedPoem =
       work.content ||
       '';
+
 
     state.poemPassages =
       Array.isArray(
@@ -4994,8 +6178,10 @@ function openSavedWork(index) {
         ? work.passages
         : [];
 
+
     state.poemError =
       '';
+
 
     state.poemGenerating =
       false;
@@ -5005,20 +6191,24 @@ function openSavedWork(index) {
     state.creationType =
       'lecture';
 
+
     state.lectureTopic =
       work.prompt ||
       work.title ||
       '';
 
+
     state.generatedLecture =
       work.content ||
       '';
+
 
     state.lectureLength =
       String(
         work.length ||
         '20'
       );
+
 
     state.lecturePassages =
       Array.isArray(
@@ -5027,8 +6217,10 @@ function openSavedWork(index) {
         ? work.passages
         : [];
 
+
     state.lectureError =
       '';
+
 
     state.lectureGenerating =
       false;
@@ -5045,17 +6237,26 @@ function openSavedWork(index) {
 
 
   window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
+
+    top:
+      0,
+
+    behavior:
+      'smooth'
+
   });
+
 }
 
 
-function removeSavedWork(index) {
+function removeSavedWork(
+  index
+) {
 
   if (
     index < 0 ||
-    index >= state.works.length
+    index >=
+      state.works.length
   ) {
 
     return;
@@ -5083,6 +6284,7 @@ function removeSavedWork(index) {
     },
     50
   );
+
 }
 
 
@@ -5102,7 +6304,9 @@ async function generate() {
         : 'Please select at least one book.'
     );
 
+
     return;
+
   }
 
 
@@ -5116,24 +6320,31 @@ async function generate() {
         : 'Please enter a lecture topic.'
     );
 
+
     return;
+
   }
 
 
   state.creationType =
     'lecture';
 
+
   state.lectureGenerating =
     true;
+
 
   state.generatedLecture =
     '';
 
+
   state.lectureError =
     '';
 
+
   state.lecturePassages =
     [];
+
 
   state.screen =
     'result';
@@ -5145,7 +6356,9 @@ async function generate() {
 
   try {
 
-    if (!state.searchReady) {
+    if (
+      !state.searchReady
+    ) {
 
       await buildSearchIndex();
 
@@ -5181,7 +6394,8 @@ async function generate() {
       await fetch(
         'https://raganuga-lecture.eyeslotus.workers.dev',
         {
-          method: 'POST',
+          method:
+            'POST',
 
           headers: {
 
@@ -5214,6 +6428,7 @@ async function generate() {
                 selected
 
             })
+
         }
       );
 
@@ -5256,7 +6471,8 @@ async function generate() {
         data.work ||
         data.content ||
         ''
-      ).trim();
+      )
+        .trim();
 
 
     if (
@@ -5303,8 +6519,10 @@ async function generate() {
     state.lectureError =
       '';
 
+
     state.lectureGenerating =
       false;
+
 
     state.screen =
       'result';
@@ -5315,8 +6533,13 @@ async function generate() {
 
 
     window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+
+      top:
+        0,
+
+      behavior:
+        'smooth'
+
     });
 
 
@@ -5335,7 +6558,8 @@ async function generate() {
     state.lectureError =
       error?.message ||
       (
-        state.lang === 'sl'
+        state.lang ===
+        'sl'
           ? 'Predavanja ni bilo mogoče ustvariti.'
           : 'Could not generate the lecture.'
       );
@@ -5349,6 +6573,7 @@ async function generate() {
     render();
 
   }
+
 }
 
 
@@ -5368,7 +6593,9 @@ async function generatePoem() {
         : 'Please select at least one book.'
     );
 
+
     return;
+
   }
 
 
@@ -5382,24 +6609,31 @@ async function generatePoem() {
         : 'Please enter a poem prompt.'
     );
 
+
     return;
+
   }
 
 
   state.creationType =
     'poem';
 
+
   state.poemGenerating =
     true;
+
 
   state.generatedPoem =
     '';
 
+
   state.poemError =
     '';
 
+
   state.poemPassages =
     [];
+
 
   state.screen =
     'result';
@@ -5411,7 +6645,9 @@ async function generatePoem() {
 
   try {
 
-    if (!state.searchReady) {
+    if (
+      !state.searchReady
+    ) {
 
       await buildSearchIndex();
 
@@ -5447,7 +6683,8 @@ async function generatePoem() {
       await fetch(
         'https://raganuga-lecture.eyeslotus.workers.dev',
         {
-          method: 'POST',
+          method:
+            'POST',
 
           headers: {
 
@@ -5474,6 +6711,7 @@ async function generatePoem() {
                 selected
 
             })
+
         }
       );
 
@@ -5516,7 +6754,8 @@ async function generatePoem() {
         data.work ||
         data.content ||
         ''
-      ).trim();
+      )
+        .trim();
 
 
     if (
@@ -5560,8 +6799,10 @@ async function generatePoem() {
     state.poemError =
       '';
 
+
     state.poemGenerating =
       false;
+
 
     state.screen =
       'result';
@@ -5572,8 +6813,13 @@ async function generatePoem() {
 
 
     window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+
+      top:
+        0,
+
+      behavior:
+        'smooth'
+
     });
 
 
@@ -5592,7 +6838,8 @@ async function generatePoem() {
     state.poemError =
       error?.message ||
       (
-        state.lang === 'sl'
+        state.lang ===
+        'sl'
           ? 'Pesmi ni bilo mogoče ustvariti.'
           : 'Could not generate the poem.'
       );
@@ -5606,6 +6853,7 @@ async function generatePoem() {
     render();
 
   }
+
 }
 
 
@@ -5629,7 +6877,11 @@ function create() {
 
         <div class="dot"></div>
 
-        <h2 style="margin-top:20px">
+
+        <h2
+          style="
+            margin-top:20px
+          ">
 
           ${
             state.lang === 'sl'
@@ -5638,6 +6890,7 @@ function create() {
           }
 
         </h2>
+
 
         <div class="muted">
 
@@ -5664,7 +6917,11 @@ function create() {
 
         <div class="dot"></div>
 
-        <h2 style="margin-top:20px">
+
+        <h2
+          style="
+            margin-top:20px
+          ">
 
           ${
             state.lang === 'sl'
@@ -5673,6 +6930,7 @@ function create() {
           }
 
         </h2>
+
 
         <div class="muted">
 
@@ -5713,12 +6971,18 @@ function create() {
         ">
 
         <h3 style="margin:0">
+
           ${t('chooseBooks')}
+
         </h3>
 
+
         <span class="muted">
+
           ${selectedCount}
+
           ${t('selectedBooks')}
+
         </span>
 
       </div>
@@ -5731,7 +6995,10 @@ function create() {
         ">
 
         ${BOOKS.map(
-          (book, index) => {
+          (
+            book,
+            index
+          ) => {
 
             const selected =
               state.sources.includes(
@@ -5769,9 +7036,11 @@ function create() {
                   ">
 
                   <strong>
+
                     ${escapeHtml(
                       book.short
                     )}
+
                   </strong>
 
                 </span>
@@ -5817,8 +7086,13 @@ function create() {
           gap:12px
         ">
 
-        <h2 style="margin:0">
+        <h2
+          style="
+            margin:0
+          ">
+
           ${t('aiLecture')}
+
         </h2>
 
       </div>
@@ -5868,45 +7142,73 @@ function create() {
     <div class="card">
 
       <h3>
+
         ${t('lectureLength')}
+
       </h3>
 
 
       <div
         class="formgrid"
-        style="margin-top:10px">
+        style="
+          margin-top:10px
+        ">
 
         ${[
-          ['10', t('minutes10')],
-          ['20', t('minutes20')],
-          ['40', t('minutes40')],
-          ['60', t('minutes60')],
-          ['120', t('minutes120')]
-        ].map(
-          ([value, label]) => `
+          [
+            '10',
+            t('minutes10')
+          ],
+          [
+            '20',
+            t('minutes20')
+          ],
+          [
+            '40',
+            t('minutes40')
+          ],
+          [
+            '60',
+            t('minutes60')
+          ],
+          [
+            '120',
+            t('minutes120')
+          ]
+        ]
+          .map(
+            (
+              [
+                value,
+                label
+              ]
+            ) => `
 
-            <button
-              type="button"
-              class="select ${
-                String(
-                  state.lectureLength
-                ) ===
-                String(value)
-                  ? 'on'
-                  : ''
-              }"
-              onclick="
-                setLectureLength(
-                  '${value}'
-                )
-              ">
+              <button
+                type="button"
+                class="select ${
+                  String(
+                    state.lectureLength
+                  ) ===
+                  String(
+                    value
+                  )
+                    ? 'on'
+                    : ''
+                }"
+                onclick="
+                  setLectureLength(
+                    '${value}'
+                  )
+                ">
 
-              ${label}
+                ${label}
 
-            </button>
+              </button>
 
-          `
-        ).join('')}
+            `
+          )
+          .join('')}
 
       </div>
 
@@ -5922,17 +7224,22 @@ function create() {
 
       <div
         class="chips"
-        style="margin-top:10px">
+        style="
+          margin-top:10px
+        ">
 
         <button
           type="button"
           class="chip ${
-            state.lang === 'sl'
+            state.lang ===
+            'sl'
               ? 'on'
               : ''
           }"
           onclick="
-            setLanguage('sl')
+            setLanguage(
+              'sl'
+            )
           ">
 
           🇸🇮 Slovenščina
@@ -5943,12 +7250,15 @@ function create() {
         <button
           type="button"
           class="chip ${
-            state.lang === 'en'
+            state.lang ===
+            'en'
               ? 'on'
               : ''
           }"
           onclick="
-            setLanguage('en')
+            setLanguage(
+              'en'
+            )
           ">
 
           🇬🇧 English
@@ -5963,9 +7273,14 @@ function create() {
     <button
       type="button"
       class="primary"
-      onclick="generate()">
+      onclick="
+        generate()
+      ">
 
-      ✦ ${t('createLecture')}
+      ✦
+      ${t(
+        'createLecture'
+      )}
 
     </button>
 
@@ -5978,7 +7293,10 @@ function create() {
       ">
 
       ${selectedCount}
-      ${t('selectedBooks')}
+
+      ${t(
+        'selectedBooks'
+      )}
 
     </div>
 
@@ -5989,10 +7307,17 @@ function create() {
 
     <div
       class="section card"
-      style="margin-top:32px">
+      style="
+        margin-top:32px
+      ">
 
-      <h2 style="margin:0">
+      <h2
+        style="
+          margin:0
+        ">
+
         ${t('aiPoem')}
+
       </h2>
 
 
@@ -6038,10 +7363,15 @@ function create() {
       <button
         type="button"
         class="primary"
-        style="margin-top:16px"
-        onclick="generatePoem()">
+        style="
+          margin-top:16px
+        "
+        onclick="
+          generatePoem()
+        ">
 
-        ✦ ${t('createPoem')}
+        ✦
+        ${t('createPoem')}
 
       </button>
 
@@ -6054,13 +7384,17 @@ function create() {
         ">
 
         ${selectedCount}
-        ${t('selectedBooks')}
+
+        ${t(
+          'selectedBooks'
+        )}
 
       </div>
 
     </div>
 
   `);
+
 }
 
 
@@ -6068,11 +7402,17 @@ function create() {
    RESULT FORMATTING
    ========================================================= */
 
-function formatLecture(text) {
+function formatLecture(
+  text
+) {
 
   const lines =
-    String(text || '')
-      .split(/\r?\n/);
+    String(
+      text || ''
+    )
+      .split(
+        /\r?\n/
+      );
 
 
   return lines
@@ -6093,7 +7433,9 @@ function formatLecture(text) {
 
 
         const escaped =
-          escapeHtml(clean);
+          escapeHtml(
+            clean
+          );
 
 
         if (
@@ -6105,9 +7447,13 @@ function formatLecture(text) {
           return `
 
             <h4
-              style="margin-top:24px">
+              style="
+                margin-top:24px
+              ">
 
-              ${escaped.slice(4)}
+              ${escaped.slice(
+                4
+              )}
 
             </h4>
 
@@ -6125,9 +7471,13 @@ function formatLecture(text) {
           return `
 
             <h3
-              style="margin-top:28px">
+              style="
+                margin-top:28px
+              ">
 
-              ${escaped.slice(3)}
+              ${escaped.slice(
+                3
+              )}
 
             </h3>
 
@@ -6145,9 +7495,13 @@ function formatLecture(text) {
           return `
 
             <h2
-              style="margin-top:28px">
+              style="
+                margin-top:28px
+              ">
 
-              ${escaped.slice(2)}
+              ${escaped.slice(
+                2
+              )}
 
             </h2>
 
@@ -6166,7 +7520,9 @@ function formatLecture(text) {
         return `
 
           <p class="english">
+
             ${formatted}
+
           </p>
 
         `;
@@ -6174,14 +7530,25 @@ function formatLecture(text) {
       }
     )
     .join('');
+
 }
 
 
-function formatPoem(text) {
+/* =========================================================
+   POEM FORMATTING
+   ========================================================= */
+
+function formatPoem(
+  text
+) {
 
   const lines =
-    String(text || '')
-      .split(/\r?\n/);
+    String(
+      text || ''
+    )
+      .split(
+        /\r?\n/
+      );
 
 
   return `
@@ -6212,7 +7579,9 @@ function formatPoem(text) {
 
 
               const escaped =
-                escapeHtml(clean);
+                escapeHtml(
+                  clean
+                );
 
 
               if (
@@ -6229,7 +7598,9 @@ function formatPoem(text) {
                       margin-bottom:8px
                     ">
 
-                    ${escaped.slice(4)}
+                    ${escaped.slice(
+                      4
+                    )}
 
                   </h4>
 
@@ -6252,7 +7623,9 @@ function formatPoem(text) {
                       margin-bottom:10px
                     ">
 
-                    ${escaped.slice(3)}
+                    ${escaped.slice(
+                      3
+                    )}
 
                   </h3>
 
@@ -6275,7 +7648,9 @@ function formatPoem(text) {
                       margin-bottom:12px
                     ">
 
-                    ${escaped.slice(2)}
+                    ${escaped.slice(
+                      2
+                    )}
 
                   </h2>
 
@@ -6314,6 +7689,7 @@ function formatPoem(text) {
     </div>
 
   `;
+
 }
 
 
@@ -6333,7 +7709,11 @@ function result() {
 
         <div class="dot"></div>
 
-        <h2 style="margin-top:20px">
+
+        <h2
+          style="
+            margin-top:20px
+          ">
 
           ${
             state.lang === 'sl'
@@ -6355,6 +7735,7 @@ function result() {
       </div>
 
     `);
+
   }
 
 
@@ -6368,7 +7749,11 @@ function result() {
 
         <div class="dot"></div>
 
-        <h2 style="margin-top:20px">
+
+        <h2
+          style="
+            margin-top:20px
+          ">
 
           ${
             state.lang === 'sl'
@@ -6390,6 +7775,7 @@ function result() {
       </div>
 
     `);
+
   }
 
 
@@ -6409,7 +7795,9 @@ function result() {
           <button
             type="button"
             class="back"
-            onclick="go('create')">
+            onclick="
+              go('create')
+            ">
 
             ‹
 
@@ -6419,7 +7807,9 @@ function result() {
           <div style="flex:1">
 
             <strong>
+
               ${t('aiPoem')}
+
             </strong>
 
           </div>
@@ -6432,8 +7822,11 @@ function result() {
           <h3>
 
             ${
-              state.lang === 'sl'
+              state.lang ===
+              'sl'
+
                 ? 'Pesmi ni bilo mogoče ustvariti'
+
                 : 'Could not create the poem'
             }
 
@@ -6454,13 +7847,19 @@ function result() {
         <button
           type="button"
           class="primary"
-          onclick="generatePoem()">
+          onclick="
+            generatePoem()
+          ">
 
-          ✦ ${t('createPoem')}
+          ✦
+          ${t(
+            'createPoem'
+          )}
 
         </button>
 
       `);
+
     }
 
 
@@ -6471,7 +7870,9 @@ function result() {
         <button
           type="button"
           class="back"
-          onclick="go('create')">
+          onclick="
+            go('create')
+          ">
 
           ‹
 
@@ -6481,14 +7882,19 @@ function result() {
         <div style="flex:1">
 
           <strong>
+
             ${t('aiPoem')}
+
           </strong>
 
 
           <div class="muted">
 
             ${state.sources.length}
-            ${t('selectedBooks')}
+
+            ${t(
+              'selectedBooks'
+            )}
 
           </div>
 
@@ -6499,7 +7905,9 @@ function result() {
 
       <div
         class="eyebrow"
-        style="margin-top:10px">
+        style="
+          margin-top:10px
+        ">
 
         ${t('generatedWork')}
 
@@ -6507,7 +7915,9 @@ function result() {
 
 
       <h1>
+
         ${t('aiPoem')}
+
       </h1>
 
 
@@ -6528,16 +7938,21 @@ function result() {
 
         ${
           state.generatedPoem
+
             ? formatPoem(
                 state.generatedPoem
               )
+
             : `
 
               <div class="muted">
 
                 ${
-                  state.lang === 'sl'
+                  state.lang ===
+                  'sl'
+
                     ? 'Pesem še ni ustvarjena.'
+
                     : 'The poem has not been generated yet.'
                 }
 
@@ -6562,22 +7977,28 @@ function result() {
 
               <div
                 class="muted"
-                style="margin-top:10px">
+                style="
+                  margin-top:10px
+                ">
 
                 ${
                   state.poemPassages
                     .map(
-                      (passage, index) =>
+                      (
+                        passage,
+                        index
+                      ) =>
                         `${index + 1}. ${
                           escapeHtml(
                             passage.bookTitle ||
                             ''
                           )
-                        } — ${
-                          escapeHtml(
-                            passage.author ||
-                            ''
-                          )
+                        }${
+                          passage.author
+                            ? ` — ${escapeHtml(
+                                passage.author
+                              )}`
+                            : ''
                         }${
                           passage.page
                             ? ` · page ${
@@ -6588,7 +8009,9 @@ function result() {
                             : ''
                         }`
                     )
-                    .join('<br>')
+                    .join(
+                      '<br>'
+                    )
                 }
 
               </div>
@@ -6603,13 +8026,17 @@ function result() {
       <button
         type="button"
         class="primary"
-        onclick="go('create')">
+        onclick="
+          go('create')
+        ">
 
-        ← ${t('create')}
+        ←
+        ${t('create')}
 
       </button>
 
     `);
+
   }
 
 
@@ -6624,7 +8051,9 @@ function result() {
         <button
           type="button"
           class="back"
-          onclick="go('create')">
+          onclick="
+            go('create')
+          ">
 
           ‹
 
@@ -6634,7 +8063,9 @@ function result() {
         <div style="flex:1">
 
           <strong>
+
             ${t('aiLecture')}
+
           </strong>
 
         </div>
@@ -6647,8 +8078,11 @@ function result() {
         <h3>
 
           ${
-            state.lang === 'sl'
+            state.lang ===
+            'sl'
+
               ? 'Predavanja ni bilo mogoče ustvariti'
+
               : 'Could not create the lecture'
           }
 
@@ -6669,13 +8103,19 @@ function result() {
       <button
         type="button"
         class="primary"
-        onclick="generate()">
+        onclick="
+          generate()
+        ">
 
-        ✦ ${t('createLecture')}
+        ✦
+        ${t(
+          'createLecture'
+        )}
 
       </button>
 
     `);
+
   }
 
 
@@ -6686,7 +8126,9 @@ function result() {
       <button
         type="button"
         class="back"
-        onclick="go('create')">
+        onclick="
+          go('create')
+        ">
 
         ‹
 
@@ -6696,16 +8138,25 @@ function result() {
       <div style="flex:1">
 
         <strong>
+
           ${t('aiLecture')}
+
         </strong>
 
 
         <div class="muted">
 
           ${state.sources.length}
-          ${t('selectedBooks')}
+
+          ${t(
+            'selectedBooks'
+          )}
+
           ·
-          ${state.lectureLength} min
+
+          ${state.lectureLength}
+
+          min
 
         </div>
 
@@ -6716,7 +8167,9 @@ function result() {
 
     <div
       class="eyebrow"
-      style="margin-top:10px">
+      style="
+        margin-top:10px
+      ">
 
       ${t('generatedWork')}
 
@@ -6724,9 +8177,11 @@ function result() {
 
 
     <h1>
+
       ${escapeHtml(
         state.lectureTopic
       )}
+
     </h1>
 
 
@@ -6734,16 +8189,21 @@ function result() {
 
       ${
         state.generatedLecture
+
           ? formatLecture(
               state.generatedLecture
             )
+
           : `
 
             <div class="muted">
 
               ${
-                state.lang === 'sl'
+                state.lang ===
+                'sl'
+
                   ? 'Predavanje še ni ustvarjeno.'
+
                   : 'The lecture has not been generated yet.'
               }
 
@@ -6762,28 +8222,36 @@ function result() {
           <div class="card section">
 
             <h3>
+
               ${t('sources')}
+
             </h3>
 
 
             <div
               class="muted"
-              style="margin-top:10px">
+              style="
+                margin-top:10px
+              ">
 
               ${
                 state.lecturePassages
                   .map(
-                    (passage, index) =>
+                    (
+                      passage,
+                      index
+                    ) =>
                       `${index + 1}. ${
                         escapeHtml(
                           passage.bookTitle ||
                           ''
                         )
-                      } — ${
-                        escapeHtml(
-                          passage.author ||
-                          ''
-                        )
+                      }${
+                        passage.author
+                          ? ` — ${escapeHtml(
+                              passage.author
+                            )}`
+                          : ''
                       }${
                         passage.page
                           ? ` · page ${
@@ -6794,7 +8262,9 @@ function result() {
                           : ''
                       }`
                   )
-                  .join('<br>')
+                  .join(
+                    '<br>'
+                  )
               }
 
             </div>
@@ -6809,13 +8279,19 @@ function result() {
     <button
       type="button"
       class="primary"
-      onclick="go('create')">
+      onclick="
+        go('create')
+      ">
 
-      ← ${t('createLecture')}
+      ←
+      ${t(
+        'createLecture'
+      )}
 
     </button>
 
   `);
+
 }
 
 
@@ -6823,10 +8299,14 @@ function result() {
    SAVED / BOOKMARKS
    ========================================================= */
 
-function openBookmark(index) {
+function openBookmark(
+  index
+) {
 
   const bookmark =
-    state.bookmarks[index];
+    state.bookmarks[
+      index
+    ];
 
 
   if (!bookmark) {
@@ -6842,21 +8322,29 @@ function openBookmark(index) {
     );
 
 
+  /*
+   * Če gre za star sample bookmark.
+   */
   if (
     bookIndex < 0 ||
-    BOOKS[bookIndex].sample
+    BOOKS[
+      bookIndex
+    ]?.sample
   ) {
 
     state.book =
       0;
 
+
     state.loadedBookId =
       'sample-book';
+
 
     state.chapter =
       Number(
         bookmark.chapter
       ) || 0;
+
 
     state.screen =
       'reader';
@@ -6884,7 +8372,8 @@ function openBookmark(index) {
                 0,
                 Math.min(
                   state.chapter,
-                  book.chapters.length - 1
+                  book.chapters.length -
+                    1
                 )
               );
 
@@ -6904,11 +8393,14 @@ function openBookmark(index) {
 
 
     return;
+
   }
 
 
   const book =
-    BOOKS[bookIndex];
+    BOOKS[
+      bookIndex
+    ];
 
 
   if (book.pdf) {
@@ -6926,33 +8418,48 @@ function openBookmark(index) {
 
 
     return;
+
   }
 
 
   if (
-    Array.isArray(book.pdfs) &&
+    Array.isArray(
+      book.pdfs
+    ) &&
     book.pdfs.length
   ) {
 
     state.book =
       bookIndex;
 
+
     state.screen =
       'reader';
+
 
     save();
     render();
 
+
     return;
+
   }
+
 }
 
 
-function removeBookmark(index) {
+/* =========================================================
+   REMOVE BOOKMARK
+   ========================================================= */
+
+function removeBookmark(
+  index
+) {
 
   if (
     index < 0 ||
-    index >= state.bookmarks.length
+    index >=
+      state.bookmarks.length
   ) {
 
     return;
@@ -6980,8 +8487,13 @@ function removeBookmark(index) {
     },
     50
   );
+
 }
 
+
+/* =========================================================
+   SAVED SCREEN
+   ========================================================= */
 
 function saved() {
 
@@ -7015,12 +8527,16 @@ function saved() {
         ">
 
         <h3>
+
           ${t('works')}
+
         </h3>
 
 
         <span class="muted">
+
           ${works.length}
+
         </span>
 
       </div>
@@ -7045,8 +8561,12 @@ function saved() {
                     work.title ||
                     (
                       isPoem
-                        ? t('aiPoem')
-                        : t('aiLecture')
+                        ? t(
+                            'aiPoem'
+                          )
+                        : t(
+                            'aiLecture'
+                          )
                     );
 
 
@@ -7055,19 +8575,23 @@ function saved() {
                       work.content ||
                       ''
                     )
-                    .replace(
-                      /\s+/g,
-                      ' '
-                    )
-                    .trim();
+                      .replace(
+                        /\s+/g,
+                        ' '
+                      )
+                      .trim();
 
 
                   const shortPreview =
-                    preview.length > 170
+                    preview.length >
+                    170
+
                       ? preview.slice(
                           0,
                           170
-                        ) + '…'
+                        ) +
+                        '…'
+
                       : preview;
 
 
@@ -7118,9 +8642,14 @@ function saved() {
 
                           ${
                             isPoem
-                              ? t('poemWork')
-                              : t('lectureWork')
+                              ? t(
+                                  'poemWork'
+                                )
+                              : t(
+                                  'lectureWork'
+                                )
                           }
+
 
                           ${
                             work.length
@@ -7161,8 +8690,12 @@ function saved() {
                             font-size:11px
                           ">
 
-                          ${t('created')}
+                          ${t(
+                            'created'
+                          )}
+
                           ·
+
                           ${escapeHtml(
                             formatWorkDate(
                               work.createdAt
@@ -7185,12 +8718,16 @@ function saved() {
                             class="chip on"
                             onclick="
                               event.stopPropagation();
+
                               openSavedWork(
                                 ${index}
                               );
+
                             ">
 
-                            ${t('openWork')}
+                            ${t(
+                              'openWork'
+                            )}
 
                           </button>
 
@@ -7200,12 +8737,16 @@ function saved() {
                             class="chip"
                             onclick="
                               event.stopPropagation();
+
                               downloadSavedWork(
                                 ${index}
                               );
+
                             ">
 
-                            ${t('downloadWork')}
+                            ${t(
+                              'downloadWork'
+                            )}
 
                           </button>
 
@@ -7215,12 +8756,16 @@ function saved() {
                             class="chip"
                             onclick="
                               event.stopPropagation();
+
                               removeSavedWork(
                                 ${index}
                               );
+
                             ">
 
-                            ${t('deleteWork')}
+                            ${t(
+                              'deleteWork'
+                            )}
 
                           </button>
 
@@ -7240,9 +8785,13 @@ function saved() {
 
             <div
               class="muted"
-              style="padding:18px 0">
+              style="
+                padding:18px 0
+              ">
 
-              ${t('noSavedWorks')}
+              ${t(
+                'noSavedWorks'
+              )}
 
             </div>
 
@@ -7261,19 +8810,27 @@ function saved() {
       <div class="row">
 
         <div class="num">
+
           ★
+
         </div>
 
 
         <div class="grow">
 
           <div>
-            ${t('bookmark')}
+
+            ${t(
+              'bookmark'
+            )}
+
           </div>
 
 
           <div class="muted">
+
             ${bookmarks.length}
+
           </div>
 
         </div>
@@ -7304,7 +8861,9 @@ function saved() {
                     ">
 
                     <div class="num">
+
                       ★
+
                     </div>
 
 
@@ -7324,12 +8883,16 @@ function saved() {
 
                         ${escapeHtml(
                           bookmark.chapterTitle ||
-                          `${t('chapter')} ${
-                            Number(
-                              bookmark.chapter ||
-                              0
-                            ) + 1
-                          }`
+                          (
+                            `${t(
+                              'chapter'
+                            )} ${
+                              Number(
+                                bookmark.chapter ||
+                                0
+                              ) + 1
+                            }`
+                          )
                         )}
 
                         ·
@@ -7349,12 +8912,15 @@ function saved() {
                         ">
 
                         ${
-                          state.lang === 'sl'
+                          state.lang ===
+                          'sl'
+
                             ? escapeHtml(
                                 bookmark.slovenian ||
                                 bookmark.english ||
                                 ''
                               )
+
                             : escapeHtml(
                                 bookmark.english ||
                                 ''
@@ -7376,12 +8942,16 @@ function saved() {
                           class="chip on"
                           onclick="
                             event.stopPropagation();
+
                             openBookmark(
                               ${index}
                             );
+
                           ">
 
-                          ${t('openBookmark')}
+                          ${t(
+                            'openBookmark'
+                          )}
 
                         </button>
 
@@ -7391,12 +8961,16 @@ function saved() {
                           class="chip"
                           onclick="
                             event.stopPropagation();
+
                             removeBookmark(
                               ${index}
                             );
+
                           ">
 
-                          ${t('removeBookmark')}
+                          ${t(
+                            'removeBookmark'
+                          )}
 
                         </button>
 
@@ -7414,9 +8988,13 @@ function saved() {
 
             <div
               class="muted"
-              style="padding:18px 0">
+              style="
+                padding:18px 0
+              ">
 
-              ${t('noBookmarks')}
+              ${t(
+                'noBookmarks'
+              )}
 
             </div>
 
@@ -7426,6 +9004,7 @@ function saved() {
     </div>
 
   `);
+
 }
 
 
@@ -7436,7 +9015,9 @@ function saved() {
 function render() {
 
   const root =
-    document.getElementById('app');
+    document.getElementById(
+      'app'
+    );
 
 
   if (!root) {
@@ -7446,25 +9027,38 @@ function render() {
 
   root.innerHTML =
 
-    state.screen === 'library'
+    state.screen ===
+    'library'
+
       ? library()
 
-    : state.screen === 'reader'
+    : state.screen ===
+      'reader'
+
       ? reader()
 
-    : state.screen === 'search'
+    : state.screen ===
+      'search'
+
       ? search()
 
-    : state.screen === 'create'
+    : state.screen ===
+      'create'
+
       ? create()
 
-    : state.screen === 'result'
+    : state.screen ===
+      'result'
+
       ? result()
 
-    : state.screen === 'saved'
+    : state.screen ===
+      'saved'
+
       ? saved()
 
     : library();
+
 }
 
 
@@ -7475,74 +9069,98 @@ function render() {
 window.setLanguage =
   setLanguage;
 
+
 window.go =
   go;
+
 
 window.toast =
   toast;
 
+
 window.openBook =
   openBook;
+
 
 window.openPdf =
   openPdf;
 
+
 window.previousChapter =
   previousChapter;
+
 
 window.nextChapter =
   nextChapter;
 
+
 window.toggleBookmark =
   toggleBookmark;
+
 
 window.openBookmark =
   openBookmark;
 
+
 window.removeBookmark =
   removeBookmark;
+
 
 window.setSearchQuery =
   setSearchQuery;
 
+
 window.setSearchFilter =
   setSearchFilter;
+
 
 window.openSearchResult =
   openSearchResult;
 
+
 window.generate =
   generate;
+
 
 window.generatePoem =
   generatePoem;
 
+
 window.toggleLectureSource =
   toggleLectureSource;
+
 
 window.setLectureTopic =
   setLectureTopic;
 
+
 window.setLectureLength =
   setLectureLength;
+
 
 window.setPoemPrompt =
   setPoemPrompt;
 
+
 window.openSavedWork =
   openSavedWork;
+
 
 window.downloadSavedWork =
   downloadSavedWork;
 
+
 window.removeSavedWork =
   removeSavedWork;
+
 
 window.save =
   save;
 
+
 window.render =
   render;
+
 
 window.loadBooksFromGitHub =
   loadBooksFromGitHub;
@@ -7553,4 +9171,5 @@ window.loadBooksFromGitHub =
    ========================================================= */
 
 render();
+
 loadBooksFromGitHub();
