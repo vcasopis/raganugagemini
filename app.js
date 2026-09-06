@@ -1,63 +1,7 @@
-const BOOKS = [
-  {
-    id: 'bhakti-rasamrita-sindhu',
-    short: 'Bhakti-rasāmṛta-sindhu',
-    author: 'Rūpa Gosvāmī',
-    script: 'Sanskrit · 4 divisions',
-    pdf: 'books/Bhakti-rasāmṛta-sindhu.pdf'
-  },
-  {
-    id: 'raga-vartma-candrika',
-    short: 'Rāga-vartma-candrikā',
-    author: 'Viśvanātha Cakravartī',
-    script: 'Sanskrit · 2 illuminations',
-    pdf: 'books/RagaVartmaCandrika_eng_2nd_ed.pdf'
-  },
-  {
-    id: 'ujjvala-nilamani',
-    short: 'Ujjvala-nīlamaṇi',
-    author: 'Rūpa Gosvāmī',
-    script: 'Sanskrit · 15 chapters',
-    pdf: 'books/Ujjvala-nilamani-kirana_1Ed_2013.pdf'
-  },
-  {
-    id: 'madhurya-kadambini',
-    short: 'Mādhurya-kādambinī',
-    author: 'Viśvanātha Cakravartī',
-    script: 'Sanskrit · 8 showers',
-    pdf: 'books/Madhurya-kadambini-eng-1ed.pdf'
-  },
-  {
-    id: 'prema-bhakti-candrika',
-    short: 'Prema-bhakti-candrikā',
-    author: 'Narottama dāsa',
-    script: 'Bengali · 8 rays',
-    pdf: 'books/Sri_Prema_Bhakti_Candrika.pdf'
-  },
-  {
-    id: 'caitanya-caramitamrita',
-    short: 'Caitanya-caritāmṛta',
-    author: 'Kṛṣṇadāsa Kavirāja',
-    script: 'Bengali · 3 līlās',
-    pdfs: [
-      {
-        id: 'adi-lila',
-        title: 'Ādi-līlā',
-        file: 'books/Sri Caitanya-cartamrta Adi-lila.pdf'
-      },
-      {
-        id: 'madhya-lila',
-        title: 'Madhya-līlā',
-        file: 'books/Sri Caitanya-cartamrta Madhya-lila.pdf'
-      },
-      {
-        id: 'antya-lila',
-        title: 'Antya-līlā',
-        file: 'books/Sri Caitanya-cartamrta Antya-lila.pdf'
-      }
-    ]
-  }
-];
+let BOOKS = [];
+
+const GITHUB_BOOKS_API =
+  'https://api.github.com/repos/vcasopis/raganuga/contents/books?ref=main';
 
 
 const FALLBACK_BOOK = {
@@ -469,6 +413,187 @@ function t(key) {
 }
 
 
+/* =========================================================
+   LOAD BOOKS AUTOMATICALLY FROM GITHUB
+   ========================================================= */
+
+async function loadBooksFromGitHub() {
+
+  try {
+
+    const response =
+      await fetch(
+        GITHUB_BOOKS_API,
+        {
+          cache: 'no-store'
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'GitHub API HTTP ' +
+        response.status
+      );
+
+    }
+
+
+    const files =
+      await response.json();
+
+
+    if (!Array.isArray(files)) {
+
+      throw new Error(
+        'GitHub books folder did not return a file list.'
+      );
+
+    }
+
+
+    BOOKS =
+      files
+        .filter(
+          file =>
+            file &&
+            file.type === 'file' &&
+            /\.pdf$/i.test(
+              file.name || ''
+            )
+        )
+        .map(
+          file => {
+
+            const title =
+              String(
+                file.name || ''
+              )
+              .replace(
+                /\.pdf$/i,
+                ''
+              );
+
+
+            return {
+
+              id:
+                'pdf-' +
+                encodeURIComponent(
+                  file.name
+                ),
+
+              short:
+                title,
+
+              author:
+                '',
+
+              script:
+                'PDF',
+
+              pdf:
+                file.download_url ||
+                (
+                  'https://raw.githubusercontent.com/' +
+                  'vcasopis/raganuga/main/books/' +
+                  encodeURIComponent(
+                    file.name
+                  )
+                )
+
+            };
+
+          }
+        );
+
+
+    /*
+     * Nova knjižnica je samodejna.
+     * Privzeto izberemo vse knjige za AI.
+     */
+
+    state.sources =
+      BOOKS.map(
+        (
+          book,
+          index
+        ) => index
+      );
+
+
+    /*
+     * Če je trenutna knjiga izven novega seznama,
+     * jo vrnemo na prvo knjigo.
+     */
+
+    if (
+      BOOKS.length === 0
+    ) {
+
+      state.book = 0;
+
+    } else {
+
+      state.book =
+        Math.max(
+          0,
+          Math.min(
+            Number(state.book) || 0,
+            BOOKS.length - 1
+          )
+        );
+
+    }
+
+
+    save();
+    render();
+
+
+    /*
+     * Če je uporabnik že na Search,
+     * pripravimo nov indeks.
+     */
+
+    if (
+      state.screen === 'search'
+    ) {
+
+      state.searchReady = false;
+      state.searchIndex = [];
+
+      buildSearchIndex();
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      'Could not load books from GitHub:',
+      error
+    );
+
+
+    BOOKS = [];
+
+
+    render();
+
+
+    toast(
+      state.lang === 'sl'
+        ? 'Knjig iz GitHuba ni bilo mogoče naložiti.'
+        : 'Could not load books from GitHub.'
+    );
+
+  }
+
+}
+
+
 function save() {
   try {
 
@@ -723,37 +848,47 @@ function library() {
       </div>
 
 
-      <div class="grid">
+      ${
+        BOOKS.length
+          ? `
 
-        ${BOOKS.map(
-          (book, index) => `
+            <div class="grid">
 
-            <div
-              class="book"
-              onclick="openBook(${index})">
+              ${BOOKS.map(
+                (book, index) => `
 
-              <div class="cover">
+                  <div
+                    class="book"
+                    onclick="openBook(${index})">
 
-                <strong>
-                  ${escapeHtml(book.short)}
-                </strong>
+                    <div class="cover">
 
-                <span class="muted">
-                  ${escapeHtml(book.script)}
-                </span>
+                      <strong>
+                        ${escapeHtml(book.short)}
+                      </strong>
 
-              </div>
+                    </div>
 
-              <div class="bookname">
-                ${escapeHtml(book.author)}
-              </div>
+                  </div>
+
+                `
+              ).join('')}
 
             </div>
 
           `
-        ).join('')}
+          : `
 
-      </div>
+            <div
+              class="muted"
+              style="padding:20px 0">
+
+              ${t('loading')}
+
+            </div>
+
+          `
+      }
 
     </div>
 
@@ -927,36 +1062,49 @@ async function loadSampleBook() {
 
 function getCurrentBook() {
 
-  if (state.book === 0) {
-
-    if (state.loadedBook) {
-      return state.loadedBook;
-    }
-
-    return FALLBACK_BOOK;
-  }
-
+  /*
+   * Sample book remains available only for old
+   * legacy bookmark/sample functionality.
+   *
+   * Real books are always taken from BOOKS.
+   */
 
   const meta =
     BOOKS[state.book];
 
 
+  if (!meta) {
+
+    if (
+      state.loadedBook
+    ) {
+
+      return state.loadedBook;
+
+    }
+
+
+    return null;
+
+  }
+
+
   return {
 
     id:
-      meta?.id ||
+      meta.id ||
       '',
 
     title:
-      meta?.short ||
+      meta.short ||
       '',
 
     author:
-      meta?.author ||
+      meta.author ||
       '',
 
     language:
-      meta?.script ||
+      meta.script ||
       '',
 
     chapters:
@@ -1154,15 +1302,15 @@ function toggleBookmark(ref) {
 
     bookId:
       state.loadedBookId ||
-      book.id ||
+      book?.id ||
       'sample-book',
 
     bookTitle:
-      book.title ||
+      book?.title ||
       'Rāgānugā Bhakti — Sample Book',
 
     author:
-      book.author ||
+      book?.author ||
       'Sample Edition',
 
     chapter:
@@ -1241,7 +1389,7 @@ function nextChapter() {
 
 
   if (
-    book.chapters &&
+    book?.chapters &&
     state.chapter <
       book.chapters.length - 1
   ) {
@@ -1424,10 +1572,6 @@ function reader() {
             ${escapeHtml(meta.short)}
           </strong>
 
-          <div class="muted">
-            ${escapeHtml(meta.author)}
-          </div>
-
         </div>
 
       </div>
@@ -1442,10 +1586,6 @@ function reader() {
         <h2>
           ${escapeHtml(meta.short)}
         </h2>
-
-        <p class="muted">
-          ${escapeHtml(meta.author)}
-        </p>
 
 
         <button
@@ -1543,11 +1683,11 @@ function reader() {
         <div style="flex:1">
 
           <strong>
-            ${escapeHtml(book.title)}
+            ${escapeHtml(book?.title || '')}
           </strong>
 
           <div class="muted">
-            ${escapeHtml(book.author)}
+            ${escapeHtml(book?.author || '')}
           </div>
 
         </div>
@@ -3966,6 +4106,7 @@ function formatWorkDate(
     return '';
 
   }
+
 }
 
 
@@ -4024,13 +4165,6 @@ function downloadSavedWork(index) {
     )
     .trim();
 
-
-  /*
-   * AI včasih vrne HTML entitete,
-   * npr. &#x20; namesto presledka.
-   * Tukaj jih najprej pretvorimo
-   * nazaj v prave znake.
-   */
 
   function decodeHtmlEntities(value) {
 
@@ -4092,10 +4226,6 @@ function downloadSavedWork(index) {
       );
 
 
-    /*
-     * Markdown headings
-     */
-
     html =
       html.replace(
         /^### (.*)$/gm,
@@ -4117,20 +4247,12 @@ function downloadSavedWork(index) {
       );
 
 
-    /*
-     * Bold
-     */
-
     html =
       html.replace(
         /\*\*(.*?)\*\*/g,
         '<strong>$1</strong>'
       );
 
-
-    /*
-     * Italic
-     */
 
     html =
       html.replace(
@@ -4139,20 +4261,12 @@ function downloadSavedWork(index) {
       );
 
 
-    /*
-     * Horizontal line
-     */
-
     html =
       html.replace(
         /^---$/gm,
         '<hr>'
       );
 
-
-    /*
-     * Odstavki
-     */
 
     const blocks =
       html
@@ -5660,19 +5774,6 @@ function create() {
                     )}
                   </strong>
 
-                  <span
-                    class="muted"
-                    style="
-                      display:block;
-                      margin-top:4px
-                    ">
-
-                    ${escapeHtml(
-                      book.author
-                    )}
-
-                  </span>
-
                 </span>
 
 
@@ -6774,7 +6875,7 @@ function openBookmark(index) {
 
 
           if (
-            book.chapters &&
+            book?.chapters &&
             book.chapters.length
           ) {
 
@@ -7104,11 +7205,7 @@ function saved() {
                               );
                             ">
 
-                            ${
-                              state.lang === 'sl'
-                                ? 'Prenesi'
-                                : 'Download'
-                            }
+                            ${t('downloadWork')}
 
                           </button>
 
@@ -7447,9 +7544,13 @@ window.save =
 window.render =
   render;
 
+window.loadBooksFromGitHub =
+  loadBooksFromGitHub;
+
 
 /* =========================================================
    START
    ========================================================= */
 
 render();
+loadBooksFromGitHub();
