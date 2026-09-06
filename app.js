@@ -69,7 +69,7 @@ let BOOKS = [];
 
 
 const GITHUB_BOOKS_API =
-  'https://api.github.com/repos/vcasopis/raganuga/contents/books';
+  'https://api.github.com/repos/vcasopis/raganugagemini/contents/books';
 
 
 const FALLBACK_BOOK = {
@@ -534,12 +534,16 @@ function t(key) {
 }
 
 
-function githubRawPdfUrl(filename) {
+function githubRawPdfUrl(
+  filename
+) {
 
   return (
     'https://raw.githubusercontent.com/' +
-    'vcasopis/raganuga/main/books/' +
-    encodeURIComponent(filename)
+    'vcasopis/raganugagemini/main/books/' +
+    encodeURIComponent(
+      filename
+    )
   );
 
 }
@@ -608,8 +612,7 @@ async function loadBooksFromGitHub() {
     /*
      * STARE KNJIGE
      *
-     * Za znane datoteke ohranimo stare naslove
-     * in avtorje.
+     * Ohranimo stare naslove in avtorje.
      */
 
     LEGACY_BOOKS.forEach(
@@ -752,7 +755,7 @@ async function loadBooksFromGitHub() {
 
 
     /*
-     * Zagotovi veljaven trenutni indeks knjige.
+     * Zagotovi veljaven trenutni indeks.
      */
 
     if (
@@ -784,7 +787,7 @@ async function loadBooksFromGitHub() {
 
     /*
      * Če smo že na Search,
-     * indeks zgradimo na novo.
+     * zgradimo nov indeks.
      */
 
     if (
@@ -829,7 +832,7 @@ async function loadBooksFromGitHub() {
 
     /*
      * Če GitHub API odpove,
-     * stare knjige vseeno ostanejo prikazane.
+     * stare knjige vseeno ostanejo.
      */
 
     BOOKS =
@@ -1309,12 +1312,16 @@ function library() {
   return layout(`
 
     <div class="eyebrow">
+
       ${t('library')}
+
     </div>
 
 
     <h1>
+
       Rāgānugā Bhakti
+
     </h1>
 
 
@@ -1329,7 +1336,9 @@ function library() {
         ">
 
         <h3>
+
           ${t('books')}
+
         </h3>
 
 
@@ -1368,9 +1377,11 @@ function library() {
                     <div class="cover">
 
                       <strong>
+
                         ${escapeHtml(
                           book.short
                         )}
+
                       </strong>
 
 
@@ -1436,6 +1447,7 @@ function openBook(index) {
   state.book =
     index;
 
+
   state.chapter =
     0;
 
@@ -1471,6 +1483,7 @@ function openBook(index) {
 
     save();
     render();
+
 
     return;
 
@@ -1562,7 +1575,8 @@ async function loadSampleBook() {
       await fetch(
         'data/sample-book.json',
         {
-          cache: 'no-store'
+          cache:
+            'no-store'
         }
       );
 
@@ -1633,7 +1647,9 @@ async function loadSampleBook() {
       () => {
 
         toast(
-          t('loadingFailed')
+          t(
+            'loadingFailed'
+          )
         );
 
       },
@@ -2084,12 +2100,16 @@ function reader() {
     return layout(`
 
       <h2>
+
         ${t('reader')}
+
       </h2>
 
 
       <div class="muted">
+
         ${t('loading')}
+
       </div>
 
     `);
@@ -2123,19 +2143,27 @@ function reader() {
         <div style="flex:1">
 
           <strong>
+
             ${escapeHtml(
               meta.short
             )}
+
           </strong>
 
 
-          <div class="muted">
+          ${
+            meta.author
+              ? `
+                <div class="muted">
 
-            ${escapeHtml(
-              meta.author
-            )}
+                  ${escapeHtml(
+                    meta.author
+                  )}
 
-          </div>
+                </div>
+              `
+              : ''
+          }
 
         </div>
 
@@ -2145,24 +2173,31 @@ function reader() {
       <div class="section">
 
         <div class="eyebrow">
+
           ${t('reader')}
+
         </div>
 
 
         <h2>
+
           ${escapeHtml(
             meta.short
           )}
+
         </h2>
 
 
         <p class="muted">
 
-          ${escapeHtml(
+          ${
             meta.author
-          )}
-
-          ·
+              ? escapeHtml(
+                  meta.author
+                ) +
+                ' · '
+              : ''
+          }
 
           ${escapeHtml(
             meta.script
@@ -2207,9 +2242,11 @@ function reader() {
                 ">
 
                 <strong>
+
                   ${escapeHtml(
                     part.title
                   )}
+
                 </strong>
 
 
@@ -2258,9 +2295,11 @@ function reader() {
         <div style="flex:1">
 
           <strong>
+
             ${escapeHtml(
               meta.short
             )}
+
           </strong>
 
         </div>
@@ -2271,14 +2310,18 @@ function reader() {
       <div class="section">
 
         <div class="eyebrow">
+
           ${t('reader')}
+
         </div>
 
 
         <h2>
+
           ${escapeHtml(
             meta.short
           )}
+
         </h2>
 
 
@@ -2343,9 +2386,11 @@ function reader() {
         <div style="flex:1">
 
           <strong>
+
             ${escapeHtml(
               meta.short
             )}
+
           </strong>
 
 
@@ -2419,10 +2464,12 @@ function reader() {
         <div style="flex:1">
 
           <strong>
+
             ${escapeHtml(
               book?.title ||
               ''
             )}
+
           </strong>
 
 
@@ -2485,9 +2532,11 @@ function reader() {
       <div style="flex:1">
 
         <strong>
+
           ${escapeHtml(
             book.title
           )}
+
         </strong>
 
 
@@ -2512,7 +2561,9 @@ function reader() {
         onclick="
           state.script =
             !state.script;
+
           save();
+
           render();
         ">
 
@@ -2732,6 +2783,7 @@ function reader() {
         ">
 
         ‹
+
         ${t('previous')}
 
       </button>
@@ -2749,6 +2801,7 @@ function reader() {
         ">
 
         ${t('next')}
+
         ›
 
       </button>
@@ -2808,7 +2861,9 @@ let searchFocusFrame =
   null;
 
 
-function normalizeSearchText(value) {
+function normalizeSearchText(
+  value
+) {
 
   return String(
     value || ''
@@ -2825,7 +2880,9 @@ function normalizeSearchText(value) {
 }
 
 
-function makeSearchSnippet(result) {
+function makeSearchSnippet(
+  result
+) {
 
   const source =
     state.lang === 'sl'
@@ -3293,7 +3350,9 @@ function loadCachedSearchIndex() {
 }
 
 
-function saveSearchRows(rows) {
+function saveSearchRows(
+  rows
+) {
 
   return openSearchDatabase()
     .then(
@@ -3623,7 +3682,8 @@ async function buildSearchIndex() {
 
   try {
 
-    let sampleResults = [];
+    let sampleResults =
+      [];
 
 
     try {
@@ -4006,10 +4066,12 @@ async function buildSearchIndex() {
 
 
 /* =========================================================
-   SEARCH
+   SEARCH INPUT
    ========================================================= */
 
-function setSearchQuery(value) {
+function setSearchQuery(
+  value
+) {
 
   state.query =
     value;
@@ -4181,7 +4243,9 @@ function search() {
     return layout(`
 
       <h2>
+
         ${t('search')}
+
       </h2>
 
 
@@ -4253,7 +4317,9 @@ function search() {
   return layout(`
 
     <h2>
+
       ${t('search')}
+
     </h2>
 
 
@@ -4525,7 +4591,8 @@ function search() {
             ">
 
             ${
-              state.lang === 'sl'
+              state.lang ===
+              'sl'
 
                 ? `
                   Prikazanih je prvih 100
@@ -6134,7 +6201,7 @@ function downloadSavedWork(
 
 
 /* =========================================================
-   OPEN / DELETE SAVED WORK
+   OPEN SAVED WORK
    ========================================================= */
 
 function openSavedWork(
@@ -6248,6 +6315,10 @@ function openSavedWork(
 
 }
 
+
+/* =========================================================
+   REMOVE SAVED WORK
+   ========================================================= */
 
 function removeSavedWork(
   index
@@ -6950,12 +7021,16 @@ function create() {
   return layout(`
 
     <div class="eyebrow">
+
       ${t('create')}
+
     </div>
 
 
     <h1>
+
       ${t('create')}
+
     </h1>
 
 
@@ -7072,10 +7147,6 @@ function create() {
     </div>
 
 
-    <!-- =====================================================
-         AI LECTURE
-         ===================================================== -->
-
     <div class="card">
 
       <div
@@ -7115,7 +7186,9 @@ function create() {
 
 
       <h3>
+
         ${t('lectureTopic')}
+
       </h3>
 
 
@@ -7218,7 +7291,9 @@ function create() {
     <div class="card">
 
       <h3>
+
         ${t('lectureLanguage')}
+
       </h3>
 
 
@@ -7278,6 +7353,7 @@ function create() {
       ">
 
       ✦
+
       ${t(
         'createLecture'
       )}
@@ -7300,10 +7376,6 @@ function create() {
 
     </div>
 
-
-    <!-- =====================================================
-         AI POEM
-         ===================================================== -->
 
     <div
       class="section card"
@@ -7338,7 +7410,9 @@ function create() {
 
 
       <h3>
+
         ${t('poemPrompt')}
+
       </h3>
 
 
@@ -7371,7 +7445,10 @@ function create() {
         ">
 
         ✦
-        ${t('createPoem')}
+
+        ${t(
+          'createPoem'
+        )}
 
       </button>
 
@@ -7971,7 +8048,9 @@ function result() {
             <div class="card section">
 
               <h3>
+
                 ${t('sources')}
+
               </h3>
 
 
@@ -8031,6 +8110,7 @@ function result() {
         ">
 
         ←
+
         ${t('create')}
 
       </button>
@@ -8108,6 +8188,7 @@ function result() {
         ">
 
         ✦
+
         ${t(
           'createLecture'
         )}
@@ -8284,6 +8365,7 @@ function result() {
       ">
 
       ←
+
       ${t(
         'createLecture'
       )}
@@ -8322,9 +8404,6 @@ function openBookmark(
     );
 
 
-  /*
-   * Če gre za star sample bookmark.
-   */
   if (
     bookIndex < 0 ||
     BOOKS[
@@ -8508,13 +8587,11 @@ function saved() {
   return layout(`
 
     <h2>
+
       ${t('saved')}
+
     </h2>
 
-
-    <!-- =====================================================
-         GENERATED WORKS
-         ===================================================== -->
 
     <div class="section">
 
@@ -8800,10 +8877,6 @@ function saved() {
 
     </div>
 
-
-    <!-- =====================================================
-         BOOKMARKS
-         ===================================================== -->
 
     <div class="section">
 
