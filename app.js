@@ -1,0 +1,7455 @@
+const BOOKS = [
+  {
+    id: 'bhakti-rasamrita-sindhu',
+    short: 'Bhakti-rasāmṛta-sindhu',
+    author: 'Rūpa Gosvāmī',
+    script: 'Sanskrit · 4 divisions',
+    pdf: 'books/Bhakti-rasāmṛta-sindhu.pdf'
+  },
+  {
+    id: 'raga-vartma-candrika',
+    short: 'Rāga-vartma-candrikā',
+    author: 'Viśvanātha Cakravartī',
+    script: 'Sanskrit · 2 illuminations',
+    pdf: 'books/RagaVartmaCandrika_eng_2nd_ed.pdf'
+  },
+  {
+    id: 'ujjvala-nilamani',
+    short: 'Ujjvala-nīlamaṇi',
+    author: 'Rūpa Gosvāmī',
+    script: 'Sanskrit · 15 chapters',
+    pdf: 'books/Ujjvala-nilamani-kirana_1Ed_2013.pdf'
+  },
+  {
+    id: 'madhurya-kadambini',
+    short: 'Mādhurya-kādambinī',
+    author: 'Viśvanātha Cakravartī',
+    script: 'Sanskrit · 8 showers',
+    pdf: 'books/Madhurya-kadambini-eng-1ed.pdf'
+  },
+  {
+    id: 'prema-bhakti-candrika',
+    short: 'Prema-bhakti-candrikā',
+    author: 'Narottama dāsa',
+    script: 'Bengali · 8 rays',
+    pdf: 'books/Sri_Prema_Bhakti_Candrika.pdf'
+  },
+  {
+    id: 'caitanya-caramitamrita',
+    short: 'Caitanya-caritāmṛta',
+    author: 'Kṛṣṇadāsa Kavirāja',
+    script: 'Bengali · 3 līlās',
+    pdfs: [
+      {
+        id: 'adi-lila',
+        title: 'Ādi-līlā',
+        file: 'books/Sri Caitanya-cartamrta Adi-lila.pdf'
+      },
+      {
+        id: 'madhya-lila',
+        title: 'Madhya-līlā',
+        file: 'books/Sri Caitanya-cartamrta Madhya-lila.pdf'
+      },
+      {
+        id: 'antya-lila',
+        title: 'Antya-līlā',
+        file: 'books/Sri Caitanya-cartamrta Antya-lila.pdf'
+      }
+    ]
+  }
+];
+
+
+const FALLBACK_BOOK = {
+  id: 'sample-book',
+  title: 'Rāgānugā Bhakti — Sample Book',
+  author: 'Sample Edition',
+  language: 'English',
+  chapters: [
+    {
+      id: 'chapter-1',
+      title: 'The Beginning of Taste',
+      verses: [
+        {
+          ref: '1.1',
+          sanskrit: 'ruciḥ bhakti-pathasya hṛdayam',
+          transliteration: 'ruciḥ bhakti-pathasya hṛdayam',
+          english: 'Taste is the heart of the devotional path.',
+          slovenian: 'Okus oziroma notranja naklonjenost je srce poti predanosti.'
+        },
+        {
+          ref: '1.2',
+          sanskrit: 'śravaṇāt sa bhāvaḥ vardhate',
+          transliteration: 'śravaṇāt sa bhāvaḥ vardhate',
+          english: 'Through attentive hearing, that devotional mood gradually becomes stronger.',
+          slovenian: 'S pozornim poslušanjem se ta notranji odnos postopoma krepi.'
+        }
+      ]
+    },
+    {
+      id: 'chapter-2',
+      title: 'Hearing and Practice',
+      verses: [
+        {
+          ref: '2.1',
+          sanskrit: 'śravaṇaṁ kīrtanaṁ ca',
+          transliteration: 'śravaṇaṁ kīrtanaṁ ca',
+          english: 'Hearing and chanting are essential parts of devotional practice.',
+          slovenian: 'Poslušanje in petje sta bistvena dela predanega duhovnega praktikovanja.'
+        },
+        {
+          ref: '2.2',
+          sanskrit: 'smaraṇaṁ sevayā saha',
+          transliteration: 'smaraṇaṁ sevayā saha',
+          english: 'Remembrance becomes deeper when joined with service.',
+          slovenian: 'Spominjanje postaja globlje, ko je povezano s služenjem.'
+        }
+      ]
+    }
+  ]
+};
+
+
+const FORMS = [
+  'Article',
+  'New book',
+  'Poetic recitation',
+  'Song lyrics',
+  'Study notes',
+  'Daily reflection',
+  'Q&A',
+  'Class outline'
+];
+
+
+const I18N = {
+  en: {
+    library: 'Library',
+    search: 'Search',
+    create: 'Create',
+    saved: 'My works',
+    books: 'Loaded books',
+    titles: 'titles',
+    collections: 'Collections',
+    continue: 'Continue',
+    sources: 'Sources',
+    findSources: 'Find sources',
+    remove: 'Remove',
+    intent: 'Intent',
+    form: 'Form',
+    generateWork: 'Generate a work',
+    generate: 'Generate',
+    generatedWork: 'Generated work',
+    from: 'From',
+    saveWork: 'Save work',
+    allBooks: 'All books',
+    passages: 'passages',
+    acrossBooks: 'Search loaded books…',
+    endSection: 'End of section',
+    versesMarked: 'verses marked',
+    firstIllumination: 'First illumination',
+    newBook: 'New book',
+    poeticRecitation: 'Poetic recitation',
+    songLyrics: 'Song lyrics',
+    studyNotes: 'Study notes',
+    dailyReflection: 'Daily reflection',
+    classOutline: 'Class outline',
+    readingSelected: 'Reading selected sources',
+    gathering: 'Gathering relevant passages',
+    composing: 'Composing in the chosen form',
+    assembling: 'Assembling the source list',
+    savedToWorks: 'Saved to My works',
+    english: 'English',
+    slovenian: 'Slovenščina',
+    sourcesCount: 'sources',
+    draft: 'draft',
+    noResults: 'No passages found',
+    searching: 'Preparing the library search…',
+    defaultIntent: 'For a Sunday class of newcomers. Keep the Sanskrit terms but explain each one.',
+    sampleBook: 'Sample book',
+    chapters: 'chapters',
+    chapter: 'Chapter',
+    previous: 'Previous',
+    next: 'Next',
+    loading: 'Loading book…',
+    bookLoaded: 'Book loaded',
+    reader: 'Reader',
+    showScript: 'Show Sanskrit',
+    hideScript: 'Hide Sanskrit',
+    bookmark: 'Bookmark',
+    bookmarked: 'Bookmarked',
+    removed: 'Bookmark removed',
+    loadingFailed: 'Could not load the sample book.',
+    backToLibrary: 'Back to Library',
+    noBookmarks: 'No bookmarks yet.',
+    openBookmark: 'Open',
+    removeBookmark: 'Remove bookmark',
+    savedWorks: 'Saved works',
+    resultIn: 'in',
+    chapterResult: 'Chapter',
+    searchHint: 'Search Sanskrit, transliteration, English or Slovenian text.',
+    openPdf: 'Open PDF',
+    choosePart: 'Choose a part',
+    adiLila: 'Ādi-līlā',
+    madhyaLila: 'Madhya-līlā',
+    antyaLila: 'Antya-līlā',
+    pagesIndexed: 'indexed pages',
+    preparingSearch: 'Preparing search index…',
+    searchReady: 'Library search ready',
+    rebuildingSearch: 'Building the library index…',
+    pdfPage: 'PDF · page',
+    openPage: 'Open page',
+    indexedPages: 'Indexed pages',
+
+    aiLecture: 'AI Lecture',
+    chooseBooks: 'Choose books',
+    selectedBooks: 'selected',
+    lectureTopic: 'Lecture topic',
+    lectureTopicPlaceholder: 'What should the lecture explain?',
+    lectureLength: 'Lecture length',
+    minutes10: '10 min',
+    minutes20: '20 min',
+    minutes40: '40 min',
+    minutes60: '60 min',
+    minutes120: '120 min',
+    lectureLanguage: 'Lecture language',
+    createLecture: 'Create lecture',
+
+    aiPoem: 'AI Poem',
+    poemPrompt: 'Poem prompt',
+    poemPromptPlaceholder: 'Describe exactly what you want: theme, number of verses, language, style, mood, Sanskrit terms, Bengali, English, Slovenian, etc.',
+    createPoem: 'Create poem',
+
+    works: 'Works',
+    noSavedWorks: 'No generated works yet.',
+    lectureWork: 'Lecture',
+    poemWork: 'Poem',
+    created: 'Created',
+    deleteWork: 'Delete',
+    openWork: 'Open',
+    downloadWork: 'Download',
+
+    aiNotConnected: 'AI generation will be connected next.'
+  },
+
+  sl: {
+    library: 'Knjižnica',
+    search: 'Iskanje',
+    create: 'Ustvari',
+    saved: 'Moja dela',
+    books: 'Naložene knjige',
+    titles: 'naslovov',
+    collections: 'Zbirke',
+    continue: 'Nadaljuj',
+    sources: 'Viri',
+    findSources: 'Poišči vire',
+    remove: 'Odstrani',
+    intent: 'Namen',
+    form: 'Oblika',
+    generateWork: 'Ustvari delo',
+    generate: 'Ustvari',
+    generatedWork: 'Ustvarjeno delo',
+    from: 'Iz',
+    saveWork: 'Shrani delo',
+    allBooks: 'Vse knjige',
+    passages: 'odlomkov',
+    acrossBooks: 'Išči po naloženih knjigah…',
+    endSection: 'Konec odseka',
+    versesMarked: 'označenih verzov',
+    firstIllumination: 'Prva iluminacija',
+    newBook: 'Nova knjiga',
+    poeticRecitation: 'Pesniška recitacija',
+    songLyrics: 'Besedilo pesmi',
+    studyNotes: 'Študijski zapiski',
+    dailyReflection: 'Dnevni razmislek',
+    classOutline: 'Oris predavanja',
+    readingSelected: 'Branje izbranih virov',
+    gathering: 'Iskanje ustreznih odlomkov',
+    composing: 'Sestavljanje v izbrani obliki',
+    assembling: 'Pripravljanje seznama virov',
+    savedToWorks: 'Shranjeno med Moja dela',
+    english: 'English',
+    slovenian: 'Slovenščina',
+    sourcesCount: 'virov',
+    draft: 'osnutek',
+    noResults: 'Odlomkov ni bilo mogoče najti',
+    searching: 'Pripravljam iskanje po knjižnici…',
+    defaultIntent: 'Za nedeljski razred začetnikov. Ohranite sanskrtske izraze, vendar vsakega razložite.',
+    sampleBook: 'Vzorčna knjiga',
+    chapters: 'poglavij',
+    chapter: 'Poglavje',
+    previous: 'Prejšnje',
+    next: 'Naslednje',
+    loading: 'Nalaganje knjige…',
+    bookLoaded: 'Knjiga naložena',
+    reader: 'Bralnik',
+    showScript: 'Prikaži sanskrt',
+    hideScript: 'Skrij sanskrt',
+    bookmark: 'Zaznamek',
+    bookmarked: 'Zaznamovano',
+    removed: 'Zaznamek odstranjen',
+    loadingFailed: 'Vzorčne knjige ni bilo mogoče naložiti.',
+    backToLibrary: 'Nazaj v knjižnico',
+    noBookmarks: 'Zaenkrat ni zaznamkov.',
+    openBookmark: 'Odpri',
+    removeBookmark: 'Odstrani zaznamek',
+    savedWorks: 'Shranjena dela',
+    resultIn: 'v',
+    chapterResult: 'Poglavje',
+    searchHint: 'Išči po sanskrtu, transliteraciji, angleškem ali slovenskem besedilu.',
+    openPdf: 'Odpri PDF',
+    choosePart: 'Izberi del',
+    adiLila: 'Ādi-līlā',
+    madhyaLila: 'Madhya-līlā',
+    antyaLila: 'Antya-līlā',
+    pagesIndexed: 'indeksiranih strani',
+    preparingSearch: 'Pripravljam iskalni indeks…',
+    searchReady: 'Iskanje po knjižnici je pripravljeno',
+    rebuildingSearch: 'Gradim indeks knjižnice…',
+    pdfPage: 'PDF · stran',
+    openPage: 'Odpri stran',
+    indexedPages: 'Indeksirane strani',
+
+    aiLecture: 'AI predavanje',
+    chooseBooks: 'Izberi knjige',
+    selectedBooks: 'izbranih',
+    lectureTopic: 'Tema predavanja',
+    lectureTopicPlaceholder: 'Kaj naj predavanje razloži?',
+    lectureLength: 'Dolžina predavanja',
+    minutes10: '10 min',
+    minutes20: '20 min',
+    minutes40: '40 min',
+    minutes60: '60 min',
+    minutes120: '120 min',
+    lectureLanguage: 'Jezik predavanja',
+    createLecture: 'Ustvari predavanje',
+
+    aiPoem: 'AI pesem',
+    poemPrompt: 'Navodilo za pesem',
+    poemPromptPlaceholder: 'Opiši vse, kar želiš: temo, število verzov, jezik, slog, razpoloženje, sanskrtske izraze, bengalščino, angleščino, slovenščino itd.',
+    createPoem: 'Ustvari pesem',
+
+    works: 'Dela',
+    noSavedWorks: 'Zaenkrat še ni ustvarjenih del.',
+    lectureWork: 'Predavanje',
+    poemWork: 'Pesem',
+    created: 'Ustvarjeno',
+    deleteWork: 'Izbriši',
+    openWork: 'Odpri',
+    downloadWork: 'Prenesi',
+
+    aiNotConnected: 'AI generiranje bomo povezali v naslednjem koraku.'
+  }
+};
+
+
+let state = {
+  screen: 'library',
+  book: 0,
+  query: '',
+  filter: 'All books',
+  form: 'Article',
+  sources: [0, 1, 2, 3],
+  script: true,
+  toast: '',
+  working: false,
+  step: 0,
+  intent: 'For a Sunday class of newcomers. Keep the Sanskrit terms but explain each one.',
+  lang: 'en',
+  loadedBook: null,
+  loadedBookId: null,
+  chapter: 0,
+  bookmarks: [],
+  searchIndex: [],
+  searchReady: false,
+  searchLoading: false,
+
+  lectureTopic: '',
+  lectureLength: '20',
+  lectureGenerating: false,
+  generatedLecture: '',
+  lectureError: '',
+  lecturePassages: [],
+
+  poemPrompt: '',
+  poemGenerating: false,
+  generatedPoem: '',
+  poemError: '',
+  poemPassages: [],
+
+  creationType: 'lecture',
+
+  works: []
+};
+
+
+try {
+  Object.assign(
+    state,
+    JSON.parse(localStorage.getItem('rb-state') || '{}')
+  );
+} catch (e) {}
+
+
+if (!state.lang) {
+  state.lang = 'en';
+}
+
+if (!Array.isArray(state.bookmarks)) {
+  state.bookmarks = [];
+}
+
+if (!Array.isArray(state.sources)) {
+  state.sources = [0, 1, 2, 3];
+}
+
+if (!Array.isArray(state.works)) {
+  state.works = [];
+}
+
+state.lectureLength =
+  String(
+    state.lectureLength || '20'
+  );
+
+if (typeof state.lectureTopic !== 'string') {
+  state.lectureTopic = '';
+}
+
+if (typeof state.lectureGenerating !== 'boolean') {
+  state.lectureGenerating = false;
+}
+
+if (typeof state.generatedLecture !== 'string') {
+  state.generatedLecture = '';
+}
+
+if (typeof state.lectureError !== 'string') {
+  state.lectureError = '';
+}
+
+if (!Array.isArray(state.lecturePassages)) {
+  state.lecturePassages = [];
+}
+
+if (typeof state.poemPrompt !== 'string') {
+  state.poemPrompt = '';
+}
+
+if (typeof state.poemGenerating !== 'boolean') {
+  state.poemGenerating = false;
+}
+
+if (typeof state.generatedPoem !== 'string') {
+  state.generatedPoem = '';
+}
+
+if (typeof state.poemError !== 'string') {
+  state.poemError = '';
+}
+
+if (!Array.isArray(state.poemPassages)) {
+  state.poemPassages = [];
+}
+
+if (
+  state.creationType !== 'poem' &&
+  state.creationType !== 'lecture'
+) {
+  state.creationType = 'lecture';
+}
+
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+function t(key) {
+  return I18N[state.lang]?.[key] || I18N.en[key] || key;
+}
+
+
+function save() {
+  try {
+
+    const savedState = {
+      screen: state.screen,
+      book: state.book,
+      query: state.query,
+      filter: state.filter,
+      form: state.form,
+      sources: state.sources,
+      script: state.script,
+      toast: state.toast,
+      working: state.working,
+      step: state.step,
+      intent: state.intent,
+      lang: state.lang,
+      loadedBook: state.loadedBook,
+      loadedBookId: state.loadedBookId,
+      chapter: state.chapter,
+      bookmarks: state.bookmarks,
+
+      lectureTopic: state.lectureTopic,
+      lectureLength: state.lectureLength,
+      generatedLecture: state.generatedLecture,
+      lectureError: state.lectureError,
+      lecturePassages: state.lecturePassages,
+
+      poemPrompt: state.poemPrompt,
+      generatedPoem: state.generatedPoem,
+      poemError: state.poemError,
+      poemPassages: state.poemPassages,
+
+      creationType: state.creationType,
+
+      works: state.works
+    };
+
+
+    localStorage.setItem(
+      'rb-state',
+      JSON.stringify(savedState)
+    );
+
+  } catch (error) {
+
+    console.warn(
+      'Could not save app state:',
+      error
+    );
+
+  }
+}
+
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+
+function escapeAttribute(value) {
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'");
+}
+
+
+function setLanguage(lang) {
+
+  state.lang = lang;
+
+  state.intent =
+    lang === 'sl'
+      ? I18N.sl.defaultIntent
+      : I18N.en.defaultIntent;
+
+  save();
+  render();
+}
+
+
+function go(screen) {
+
+  if (
+    typeof searchFocusFrame !== 'undefined' &&
+    searchFocusFrame !== null
+  ) {
+
+    cancelAnimationFrame(searchFocusFrame);
+    searchFocusFrame = null;
+
+  }
+
+
+  state.screen = screen;
+
+  save();
+  render();
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+
+function toast(message) {
+
+  state.toast = message;
+  render();
+
+  setTimeout(() => {
+
+    state.toast = '';
+    render();
+
+  }, 1800);
+}
+
+
+function languageSelector() {
+
+  return `
+    <div class="language-selector">
+
+      <button
+        type="button"
+        class="chip ${state.lang === 'en' ? 'on' : ''}"
+        onclick="setLanguage('en')">
+
+        🇬🇧 EN
+
+      </button>
+
+      <button
+        type="button"
+        class="chip ${state.lang === 'sl' ? 'on' : ''}"
+        onclick="setLanguage('sl')">
+
+        🇸🇮 SL
+
+      </button>
+
+    </div>
+  `;
+}
+
+
+function nav() {
+
+  return `
+    <nav class="nav">
+
+      ${[
+        ['library', '▦', t('library')],
+        ['search', '⌕', t('search')],
+        ['create', '✦', t('create')],
+        ['saved', '♡', t('saved')]
+      ].map(
+        ([key, icon, label]) => `
+
+          <button
+            type="button"
+            class="${state.screen === key ? 'active' : ''}"
+            onclick="go('${key}')">
+
+            ${icon}
+
+            <small>
+              ${label}
+            </small>
+
+          </button>
+
+        `
+      ).join('')}
+
+    </nav>
+  `;
+}
+
+
+function layout(body) {
+
+  return `
+    <div class="shell">
+
+      <main class="phone">
+
+        <div class="content">
+
+          ${languageSelector()}
+
+          ${body}
+
+        </div>
+
+        ${nav()}
+
+        ${
+          state.toast
+            ? `<div class="toast">${escapeHtml(state.toast)}</div>`
+            : ''
+        }
+
+      </main>
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   LIBRARY
+   ========================================================= */
+
+function library() {
+
+  return layout(`
+
+    <div class="eyebrow">
+      ${t('library')}
+    </div>
+
+    <h1>
+      Rāgānugā Bhakti
+    </h1>
+
+
+    <div class="section">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          margin-bottom:12px
+        ">
+
+        <h3>
+          ${t('books')}
+        </h3>
+
+        <span class="muted">
+          ${BOOKS.length} ${t('titles')}
+        </span>
+
+      </div>
+
+
+      <div class="grid">
+
+        ${BOOKS.map(
+          (book, index) => `
+
+            <div
+              class="book"
+              onclick="openBook(${index})">
+
+              <div class="cover">
+
+                <strong>
+                  ${escapeHtml(book.short)}
+                </strong>
+
+                <span class="muted">
+                  ${escapeHtml(book.script)}
+                </span>
+
+              </div>
+
+              <div class="bookname">
+                ${escapeHtml(book.author)}
+              </div>
+
+            </div>
+
+          `
+        ).join('')}
+
+      </div>
+
+    </div>
+
+  `);
+}
+
+
+/* =========================================================
+   BOOK OPENING
+   ========================================================= */
+
+function openBook(index) {
+
+  state.book = index;
+  state.chapter = 0;
+
+  const book = BOOKS[index];
+
+  if (!book) {
+    return;
+  }
+
+
+  if (book.sample) {
+    loadSampleBook();
+    return;
+  }
+
+
+  if (
+    Array.isArray(book.pdfs) &&
+    book.pdfs.length
+  ) {
+
+    state.screen = 'reader';
+
+    save();
+    render();
+
+    return;
+  }
+
+
+  if (book.pdf) {
+
+    save();
+
+    window.open(
+      book.pdf,
+      '_blank',
+      'noopener,noreferrer'
+    );
+
+    return;
+  }
+
+
+  go('reader');
+}
+
+
+function openPdf(file, page) {
+
+  if (!file) {
+    return;
+  }
+
+
+  const target =
+    page
+      ? file + '#page=' + encodeURIComponent(page)
+      : file;
+
+
+  window.open(
+    target,
+    '_blank',
+    'noopener,noreferrer'
+  );
+}
+
+
+async function loadSampleBook() {
+
+  state.loadedBook = null;
+  state.loadedBookId = 'sample-book';
+  state.screen = 'reader';
+
+  save();
+  render();
+
+
+  try {
+
+    const response =
+      await fetch(
+        'data/sample-book.json',
+        {
+          cache: 'no-store'
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTP ' +
+        response.status
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    state.loadedBook =
+      data;
+
+    state.loadedBookId =
+      data.id ||
+      'sample-book';
+
+
+    if (
+      state.chapter < 0 ||
+      state.chapter >=
+        (data.chapters || []).length
+    ) {
+
+      state.chapter = 0;
+
+    }
+
+
+    save();
+    render();
+
+
+  } catch (error) {
+
+    console.error(
+      'Sample book loading error:',
+      error
+    );
+
+
+    state.loadedBook =
+      FALLBACK_BOOK;
+
+    state.loadedBookId =
+      'sample-book';
+
+
+    save();
+    render();
+
+
+    setTimeout(() => {
+
+      toast(
+        t('loadingFailed')
+      );
+
+    }, 100);
+
+  }
+}
+
+
+function getCurrentBook() {
+
+  if (state.book === 0) {
+
+    if (state.loadedBook) {
+      return state.loadedBook;
+    }
+
+    return FALLBACK_BOOK;
+  }
+
+
+  const meta =
+    BOOKS[state.book];
+
+
+  return {
+
+    id:
+      meta?.id ||
+      '',
+
+    title:
+      meta?.short ||
+      '',
+
+    author:
+      meta?.author ||
+      '',
+
+    language:
+      meta?.script ||
+      '',
+
+    chapters:
+      []
+
+  };
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+function getProgress(bookIndex) {
+
+  const book =
+    BOOKS[bookIndex];
+
+  if (!book) {
+    return 0;
+  }
+
+
+  const value =
+    Number(
+      localStorage.getItem(
+        'rb-progress-' +
+        book.id
+      ) || 0
+    );
+
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      value
+    )
+  );
+}
+
+
+function setProgress(
+  bookId,
+  value
+) {
+
+  const safeValue =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        Math.round(value)
+      )
+    );
+
+
+  localStorage.setItem(
+    'rb-progress-' +
+    bookId,
+    String(safeValue)
+  );
+}
+
+
+function updateReadingProgress() {
+
+  const book =
+    getCurrentBook();
+
+
+  if (
+    !book ||
+    !Array.isArray(book.chapters) ||
+    book.chapters.length === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const progress =
+    (
+      (state.chapter + 1) /
+      book.chapters.length
+    ) *
+    100;
+
+
+  setProgress(
+    book.id || 'sample-book',
+    progress
+  );
+}
+
+
+function currentChapter() {
+
+  const book =
+    getCurrentBook();
+
+
+  if (
+    !book ||
+    !Array.isArray(book.chapters)
+  ) {
+
+    return null;
+
+  }
+
+
+  return (
+    book.chapters[state.chapter] ||
+    null
+  );
+}
+
+
+/* =========================================================
+   BOOKMARKS
+   ========================================================= */
+
+function isBookmarked(ref) {
+
+  return state.bookmarks.some(
+    bookmark =>
+      bookmark.bookId ===
+        state.loadedBookId &&
+      Number(bookmark.chapter) ===
+        Number(state.chapter) &&
+      String(bookmark.ref) ===
+        String(ref)
+  );
+}
+
+
+function toggleBookmark(ref) {
+
+  const existing =
+    state.bookmarks.findIndex(
+      bookmark =>
+        bookmark.bookId ===
+          state.loadedBookId &&
+        Number(bookmark.chapter) ===
+          Number(state.chapter) &&
+        String(bookmark.ref) ===
+          String(ref)
+    );
+
+
+  if (existing >= 0) {
+
+    state.bookmarks.splice(
+      existing,
+      1
+    );
+
+
+    save();
+    render();
+
+
+    setTimeout(() => {
+
+      toast(
+        t('removed')
+      );
+
+    }, 50);
+
+
+    return;
+  }
+
+
+  const book =
+    getCurrentBook();
+
+  const chapter =
+    currentChapter();
+
+
+  const verse =
+    (chapter?.verses || [])
+      .find(
+        item =>
+          String(item.ref) ===
+          String(ref)
+      );
+
+
+  state.bookmarks.push({
+
+    bookId:
+      state.loadedBookId ||
+      book.id ||
+      'sample-book',
+
+    bookTitle:
+      book.title ||
+      'Rāgānugā Bhakti — Sample Book',
+
+    author:
+      book.author ||
+      'Sample Edition',
+
+    chapter:
+      Number(
+        state.chapter
+      ),
+
+    chapterTitle:
+      chapter?.title ||
+      '',
+
+    ref:
+      String(ref),
+
+    english:
+      verse?.english ||
+      '',
+
+    slovenian:
+      verse?.slovenian ||
+      '',
+
+    sanskrit:
+      verse?.sanskrit ||
+      '',
+
+    transliteration:
+      verse?.transliteration ||
+      '',
+
+    created:
+      new Date().toISOString()
+
+  });
+
+
+  save();
+  render();
+
+
+  setTimeout(() => {
+
+    toast(
+      t('bookmarked')
+    );
+
+  }, 50);
+}
+
+
+function previousChapter() {
+
+  if (
+    state.chapter > 0
+  ) {
+
+    state.chapter--;
+
+    updateReadingProgress();
+
+    save();
+    render();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+}
+
+
+function nextChapter() {
+
+  const book =
+    getCurrentBook();
+
+
+  if (
+    book.chapters &&
+    state.chapter <
+      book.chapters.length - 1
+  ) {
+
+    state.chapter++;
+
+    updateReadingProgress();
+
+    save();
+    render();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  } else {
+
+    updateReadingProgress();
+
+    toast(
+      t('endSection')
+    );
+  }
+}
+
+
+/* =========================================================
+   READER
+   ========================================================= */
+
+function reader() {
+
+  const meta =
+    BOOKS[state.book];
+
+
+  if (!meta) {
+
+    return layout(`
+
+      <h2>
+        ${t('reader')}
+      </h2>
+
+      <div class="muted">
+        ${t('loading')}
+      </div>
+
+    `);
+
+  }
+
+
+  if (
+    Array.isArray(meta.pdfs) &&
+    meta.pdfs.length
+  ) {
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('library')">
+
+          ‹
+
+        </button>
+
+        <div style="flex:1">
+
+          <strong>
+            ${escapeHtml(meta.short)}
+          </strong>
+
+          <div class="muted">
+            ${escapeHtml(meta.author)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section">
+
+        <div class="eyebrow">
+          ${t('reader')}
+        </div>
+
+        <h2>
+          ${escapeHtml(meta.short)}
+        </h2>
+
+        <p class="muted">
+
+          ${escapeHtml(meta.author)}
+
+          ·
+
+          ${escapeHtml(meta.script)}
+
+        </p>
+
+
+        <h3 style="margin-top:24px">
+          ${t('choosePart')}
+        </h3>
+
+
+        <div
+          style="
+            display:grid;
+            gap:12px;
+            margin-top:14px
+          ">
+
+          ${meta.pdfs.map(
+            part => `
+
+              <button
+                type="button"
+                class="select"
+                style="
+                  text-align:left;
+                  padding:16px
+                "
+                onclick="
+                  openPdf(
+                    '${escapeAttribute(part.file)}'
+                  )
+                ">
+
+                <strong>
+                  ${escapeHtml(part.title)}
+                </strong>
+
+                <div
+                  class="muted"
+                  style="margin-top:4px">
+
+                  PDF
+
+                </div>
+
+              </button>
+
+            `
+          ).join('')}
+
+        </div>
+
+      </div>
+
+    `);
+  }
+
+
+  if (meta.pdf) {
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('library')">
+
+          ‹
+
+        </button>
+
+        <div style="flex:1">
+
+          <strong>
+            ${escapeHtml(meta.short)}
+          </strong>
+
+          <div class="muted">
+            ${escapeHtml(meta.author)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section">
+
+        <div class="eyebrow">
+          ${t('reader')}
+        </div>
+
+        <h2>
+          ${escapeHtml(meta.short)}
+        </h2>
+
+        <p class="muted">
+          ${escapeHtml(meta.author)}
+        </p>
+
+
+        <button
+          type="button"
+          class="primary"
+          onclick="
+            openPdf(
+              '${escapeAttribute(meta.pdf)}'
+            )
+          ">
+
+          ${t('openPdf')}
+
+        </button>
+
+      </div>
+
+    `);
+  }
+
+
+  if (
+    meta.sample &&
+    !state.loadedBook
+  ) {
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('library')">
+
+          ‹
+
+        </button>
+
+        <div style="flex:1">
+
+          <strong>
+            ${escapeHtml(meta.short)}
+          </strong>
+
+          <div class="muted">
+            ${escapeHtml(meta.author)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+        <h2 style="margin-top:20px">
+          ${t('loading')}
+        </h2>
+
+        <div class="muted">
+          data/sample-book.json
+        </div>
+
+      </div>
+
+    `);
+  }
+
+
+  const book =
+    getCurrentBook();
+
+  const chapter =
+    currentChapter();
+
+
+  if (!chapter) {
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('library')">
+
+          ‹
+
+        </button>
+
+        <div style="flex:1">
+
+          <strong>
+            ${escapeHtml(book.title)}
+          </strong>
+
+          <div class="muted">
+            ${escapeHtml(book.author)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="muted">
+        ${t('loading')}
+      </div>
+
+    `);
+  }
+
+
+  const progress =
+    book.chapters.length
+      ? Math.round(
+          (
+            (state.chapter + 1) /
+            book.chapters.length
+          ) *
+          100
+        )
+      : 0;
+
+
+  return layout(`
+
+    <div class="top">
+
+      <button
+        type="button"
+        class="back"
+        onclick="go('library')">
+
+        ‹
+
+      </button>
+
+
+      <div style="flex:1">
+
+        <strong>
+          ${escapeHtml(book.title)}
+        </strong>
+
+        <div class="muted">
+          ${escapeHtml(book.author)}
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="chip ${state.script ? 'on' : ''}"
+        onclick="
+          state.script=!state.script;
+          save();
+          render();
+        ">
+
+        ${state.script ? 'A अ' : 'A'}
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="muted"
+      style="
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:18px
+      ">
+
+      <span>
+
+        ${t('chapter')}
+        ${state.chapter + 1}
+        /
+        ${book.chapters.length}
+
+      </span>
+
+      <span>
+
+        ${progress}%
+
+      </span>
+
+    </div>
+
+
+    <div
+      class="progress"
+      style="margin-bottom:28px">
+
+      <i
+        style="width:${progress}%">
+      </i>
+
+    </div>
+
+
+    <h2>
+      ${escapeHtml(chapter.title)}
+    </h2>
+
+
+    <div class="section">
+
+      ${
+        (chapter.verses || [])
+          .map(
+            verse => `
+
+              <div
+                class="verse"
+                onclick="
+                  toggleBookmark(
+                    '${escapeAttribute(verse.ref)}'
+                  )
+                ">
+
+                <div
+                  style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center
+                  ">
+
+                  <div class="ref">
+                    ${escapeHtml(verse.ref)}
+                  </div>
+
+                  <div
+                    class="muted"
+                    style="font-size:11px">
+
+                    ${
+                      isBookmarked(
+                        verse.ref
+                      )
+                        ? '★'
+                        : '☆'
+                    }
+
+                  </div>
+
+                </div>
+
+
+                ${
+                  state.script
+                    ? `
+
+                      <div class="deva">
+
+                        ${escapeHtml(
+                          verse.sanskrit ||
+                          ''
+                        )}
+
+                      </div>
+
+                      <div class="translit">
+
+                        ${escapeHtml(
+                          verse.transliteration ||
+                          ''
+                        )}
+
+                      </div>
+
+                    `
+                    : ''
+                }
+
+
+                <div class="english">
+
+                  ${
+                    state.lang === 'sl'
+                      ? escapeHtml(
+                          verse.slovenian ||
+                          verse.english ||
+                          ''
+                        )
+                      : escapeHtml(
+                          verse.english ||
+                          ''
+                        )
+                  }
+
+                </div>
+
+
+                ${
+                  verse.note
+                    ? `
+                      <div class="note">
+
+                        ${escapeHtml(
+                          verse.note
+                        )}
+
+                      </div>
+                    `
+                    : ''
+                }
+
+              </div>
+
+            `
+          )
+          .join('')
+      }
+
+    </div>
+
+
+    <div
+      style="
+        display:flex;
+        gap:10px;
+        margin-top:30px;
+        max-width:950px
+      ">
+
+      <button
+        type="button"
+        class="chip"
+        style="
+          flex:1;
+          padding:12px
+        "
+        onclick="previousChapter()">
+
+        ‹ ${t('previous')}
+
+      </button>
+
+
+      <button
+        type="button"
+        class="chip on"
+        style="
+          flex:1;
+          padding:12px
+        "
+        onclick="nextChapter()">
+
+        ${t('next')} ›
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="muted"
+      style="
+        text-align:center;
+        margin-top:20px
+      ">
+
+      ${t('bookmark')}:
+
+      ${
+        state.bookmarks.filter(
+          item =>
+            item.bookId ===
+            state.loadedBookId
+        ).length
+      }
+
+    </div>
+
+  `);
+}
+
+
+/* =========================================================
+   PDF SEARCH ENGINE
+   ========================================================= */
+
+const PDFJS_VERSION =
+  '6.2.108';
+
+const SEARCH_DB_NAME =
+  'raganuga-search-db';
+
+const SEARCH_DB_VERSION =
+  1;
+
+const SEARCH_STORE_NAME =
+  'pages';
+
+let pdfjsPromise = null;
+
+let searchFocusFrame = null;
+
+
+function normalizeSearchText(value) {
+
+  return String(value || '')
+    .normalize('NFD')
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+    .toLowerCase();
+
+}
+
+
+function makeSearchSnippet(result) {
+
+  const source =
+    state.lang === 'sl'
+      ? (
+          result.slovenian ||
+          result.english ||
+          result.sanskrit ||
+          ''
+        )
+      : (
+          result.english ||
+          result.sanskrit ||
+          ''
+        );
+
+
+  const text =
+    String(source)
+      .replace(/\s+/g, ' ')
+      .trim();
+
+
+  if (
+    text.length <= 320
+  ) {
+
+    return text;
+
+  }
+
+
+  const query =
+    normalizeSearchText(
+      state.query
+    );
+
+
+  const normalized =
+    normalizeSearchText(
+      text
+    );
+
+
+  const pos =
+    query
+      ? normalized.indexOf(query)
+      : -1;
+
+
+  if (pos >= 0) {
+
+    const start =
+      Math.max(
+        0,
+        pos - 120
+      );
+
+
+    const end =
+      Math.min(
+        text.length,
+        start + 320
+      );
+
+
+    return (
+      (start > 0 ? '…' : '') +
+      text.slice(
+        start,
+        end
+      ) +
+      (end < text.length ? '…' : '')
+    );
+
+  }
+
+
+  return (
+    text.slice(0, 320) +
+    '…'
+  );
+}
+
+
+function getPdfEntries() {
+
+  const entries = [];
+
+
+  BOOKS.forEach(
+    book => {
+
+      if (book.pdf) {
+
+        entries.push({
+
+          bookId:
+            book.id,
+
+          bookTitle:
+            book.short,
+
+          author:
+            book.author,
+
+          chapterTitle:
+            'PDF',
+
+          pdf:
+            book.pdf
+
+        });
+
+
+        return;
+      }
+
+
+      if (
+        Array.isArray(book.pdfs)
+      ) {
+
+        book.pdfs.forEach(
+          part => {
+
+            entries.push({
+
+              bookId:
+                book.id,
+
+              bookTitle:
+                book.short,
+
+              author:
+                book.author,
+
+              chapterTitle:
+                part.title,
+
+              pdf:
+                part.file,
+
+              partId:
+                part.id
+
+            });
+
+          }
+        );
+      }
+
+    }
+  );
+
+
+  return entries;
+}
+
+
+async function getPdfJs() {
+
+  if (!pdfjsPromise) {
+
+    pdfjsPromise =
+      import(
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@' +
+        PDFJS_VERSION +
+        '/build/pdf.min.mjs'
+      )
+      .then(
+        pdfjsLib => {
+
+          pdfjsLib
+            .GlobalWorkerOptions
+            .workerSrc =
+              'https://cdn.jsdelivr.net/npm/pdfjs-dist@' +
+              PDFJS_VERSION +
+              '/build/pdf.worker.min.mjs';
+
+          return pdfjsLib;
+
+        }
+      );
+  }
+
+
+  return pdfjsPromise;
+}
+
+
+function openSearchDatabase() {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      if (
+        !('indexedDB' in window)
+      ) {
+
+        reject(
+          new Error(
+            'IndexedDB ni podprt v tem brskalniku.'
+          )
+        );
+
+        return;
+
+      }
+
+
+      const request =
+        indexedDB.open(
+          SEARCH_DB_NAME,
+          SEARCH_DB_VERSION
+        );
+
+
+      request.onupgradeneeded =
+        function () {
+
+          const db =
+            request.result;
+
+
+          if (
+            !db.objectStoreNames.contains(
+              SEARCH_STORE_NAME
+            )
+          ) {
+
+            const store =
+              db.createObjectStore(
+                SEARCH_STORE_NAME,
+                {
+                  keyPath: 'id'
+                }
+              );
+
+
+            store.createIndex(
+              'bookId',
+              'bookId',
+              {
+                unique: false
+              }
+            );
+
+
+            store.createIndex(
+              'pdf',
+              'pdf',
+              {
+                unique: false
+              }
+            );
+
+          }
+
+        };
+
+
+      request.onsuccess =
+        function () {
+
+          resolve(
+            request.result
+          );
+
+        };
+
+
+      request.onerror =
+        function () {
+
+          reject(
+            request.error ||
+            new Error(
+              'IndexedDB error.'
+            )
+          );
+
+        };
+
+    }
+  );
+}
+
+
+function clearSearchDatabase() {
+
+  return openSearchDatabase()
+    .then(
+      db => {
+
+        return new Promise(
+          (resolve, reject) => {
+
+            const transaction =
+              db.transaction(
+                SEARCH_STORE_NAME,
+                'readwrite'
+              );
+
+
+            const store =
+              transaction.objectStore(
+                SEARCH_STORE_NAME
+              );
+
+
+            const request =
+              store.clear();
+
+
+            request.onsuccess =
+              () =>
+                resolve();
+
+
+            request.onerror =
+              () =>
+                reject(
+                  request.error
+                );
+
+
+            transaction.oncomplete =
+              () =>
+                db.close();
+
+
+            transaction.onerror =
+              () =>
+                reject(
+                  transaction.error
+                );
+
+          }
+        );
+
+      }
+    );
+}
+
+
+function loadCachedSearchIndex() {
+
+  return openSearchDatabase()
+    .then(
+      db => {
+
+        return new Promise(
+          (resolve, reject) => {
+
+            const transaction =
+              db.transaction(
+                SEARCH_STORE_NAME,
+                'readonly'
+              );
+
+
+            const store =
+              transaction.objectStore(
+                SEARCH_STORE_NAME
+              );
+
+
+            const request =
+              store.getAll();
+
+
+            request.onsuccess =
+              function () {
+
+                const rows =
+                  request.result ||
+                  [];
+
+
+                db.close();
+
+
+                resolve(
+                  rows
+                );
+
+              };
+
+
+            request.onerror =
+              function () {
+
+                db.close();
+
+
+                reject(
+                  request.error
+                );
+
+              };
+
+          }
+        );
+
+      }
+    );
+}
+
+
+function saveSearchRows(rows) {
+
+  return openSearchDatabase()
+    .then(
+      db => {
+
+        return new Promise(
+          (resolve, reject) => {
+
+            const transaction =
+              db.transaction(
+                SEARCH_STORE_NAME,
+                'readwrite'
+              );
+
+
+            const store =
+              transaction.objectStore(
+                SEARCH_STORE_NAME
+              );
+
+
+            rows.forEach(
+              row => {
+
+                store.put(
+                  row
+                );
+
+              }
+            );
+
+
+            transaction.oncomplete =
+              function () {
+
+                db.close();
+                resolve();
+
+              };
+
+
+            transaction.onerror =
+              function () {
+
+                db.close();
+
+
+                reject(
+                  transaction.error
+                );
+
+              };
+
+          }
+        );
+
+      }
+    );
+}
+
+
+function makeSearchRow(
+  bookId,
+  bookTitle,
+  author,
+  chapterTitle,
+  pdf,
+  page,
+  text
+) {
+
+  const cleanText =
+    String(text || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+
+  return {
+
+    id:
+      bookId +
+      '|' +
+      pdf +
+      '|' +
+      page,
+
+    bookId,
+
+    bookTitle,
+
+    author,
+
+    chapterIndex:
+      0,
+
+    chapterTitle:
+      chapterTitle +
+      ' · page ' +
+      page,
+
+    ref:
+      'p. ' +
+      page,
+
+    page,
+
+    pdf,
+
+    sanskrit:
+      cleanText,
+
+    transliteration:
+      cleanText,
+
+    english:
+      cleanText,
+
+    slovenian:
+      cleanText,
+
+    normalized:
+      normalizeSearchText(
+        [
+          bookTitle,
+          author,
+          chapterTitle,
+          cleanText
+        ].join(' ')
+      )
+
+  };
+}
+
+
+async function buildPdfSearchIndex() {
+
+  const pdfjsLib =
+    await getPdfJs();
+
+
+  const entries =
+    getPdfEntries();
+
+
+  const rows = [];
+
+
+  let totalPages = 0;
+
+
+  for (
+    let bookNumber = 0;
+    bookNumber < entries.length;
+    bookNumber++
+  ) {
+
+    const entry =
+      entries[bookNumber];
+
+
+    const loadingTask =
+      pdfjsLib.getDocument({
+
+        url:
+          entry.pdf,
+
+        enableScripting:
+          false
+
+      });
+
+
+    const pdf =
+      await loadingTask.promise;
+
+
+    totalPages +=
+      pdf.numPages;
+
+
+    for (
+      let pageNumber = 1;
+      pageNumber <= pdf.numPages;
+      pageNumber++
+    ) {
+
+      const page =
+        await pdf.getPage(
+          pageNumber
+        );
+
+
+      const content =
+        await page.getTextContent();
+
+
+      const text =
+        content.items
+          .map(
+            item =>
+              item.str || ''
+          )
+          .join(' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+
+      if (text) {
+
+        rows.push(
+          makeSearchRow(
+            entry.bookId,
+            entry.bookTitle,
+            entry.author,
+            entry.chapterTitle,
+            entry.pdf,
+            pageNumber,
+            text
+          )
+        );
+
+      }
+
+
+      if (
+        pageNumber === 1 ||
+        pageNumber % 25 === 0 ||
+        pageNumber === pdf.numPages
+      ) {
+
+        state.searchIndex =
+          rows.slice();
+
+
+        if (
+          state.screen === 'search'
+        ) {
+
+          render();
+
+        }
+
+      }
+
+    }
+
+
+    try {
+
+      await pdf.destroy();
+
+    } catch (e) {}
+
+  }
+
+
+  return {
+
+    rows,
+
+    totalPages
+
+  };
+}
+
+
+async function buildSearchIndex() {
+
+  if (
+    state.searchReady ||
+    state.searchLoading
+  ) {
+
+    return;
+
+  }
+
+
+  state.searchLoading =
+    true;
+
+
+  if (
+    state.screen === 'search'
+  ) {
+
+    render();
+
+  }
+
+
+  try {
+
+    let sampleResults = [];
+
+
+    try {
+
+      const response =
+        await fetch(
+          'data/sample-book.json',
+          {
+            cache: 'no-store'
+          }
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          'HTTP ' +
+          response.status
+        );
+
+      }
+
+
+      const book =
+        await response.json();
+
+
+      (book.chapters || [])
+        .forEach(
+          (
+            chapter,
+            chapterIndex
+          ) => {
+
+            (chapter.verses || [])
+              .forEach(
+                verse => {
+
+                  sampleResults.push({
+
+                    id:
+                      'sample|' +
+                      chapterIndex +
+                      '|' +
+                      verse.ref,
+
+                    bookId:
+                      book.id,
+
+                    bookTitle:
+                      book.title,
+
+                    author:
+                      book.author,
+
+                    chapterIndex,
+
+                    chapterTitle:
+                      chapter.title,
+
+                    ref:
+                      verse.ref,
+
+                    sanskrit:
+                      verse.sanskrit ||
+                      '',
+
+                    transliteration:
+                      verse.transliteration ||
+                      '',
+
+                    english:
+                      verse.english ||
+                      '',
+
+                    slovenian:
+                      verse.slovenian ||
+                      '',
+
+                    normalized:
+                      normalizeSearchText(
+                        [
+                          book.title,
+                          book.author,
+                          chapter.title,
+                          verse.ref,
+                          verse.sanskrit,
+                          verse.transliteration,
+                          verse.english,
+                          verse.slovenian
+                        ].join(' ')
+                      )
+
+                  });
+
+                }
+              );
+
+          }
+        );
+
+    } catch (error) {
+
+      const book =
+        FALLBACK_BOOK;
+
+
+      (book.chapters || [])
+        .forEach(
+          (
+            chapter,
+            chapterIndex
+          ) => {
+
+            (chapter.verses || [])
+              .forEach(
+                verse => {
+
+                  sampleResults.push({
+
+                    id:
+                      'sample|' +
+                      chapterIndex +
+                      '|' +
+                      verse.ref,
+
+                    bookId:
+                      book.id,
+
+                    bookTitle:
+                      book.title,
+
+                    author:
+                      book.author,
+
+                    chapterIndex,
+
+                    chapterTitle:
+                      chapter.title,
+
+                    ref:
+                      verse.ref,
+
+                    sanskrit:
+                      verse.sanskrit ||
+                      '',
+
+                    transliteration:
+                      verse.transliteration ||
+                      '',
+
+                    english:
+                      verse.english ||
+                      '',
+
+                    slovenian:
+                      verse.slovenian ||
+                      '',
+
+                    normalized:
+                      normalizeSearchText(
+                        [
+                          book.title,
+                          book.author,
+                          chapter.title,
+                          verse.ref,
+                          verse.sanskrit,
+                          verse.transliteration,
+                          verse.english,
+                          verse.slovenian
+                        ].join(' ')
+                      )
+
+                  });
+
+                }
+              );
+
+          }
+        );
+
+    }
+
+
+    let cachedRows = [];
+
+
+    try {
+
+      cachedRows =
+        await loadCachedSearchIndex();
+
+    } catch (error) {
+
+      console.warn(
+        'Could not load cached search index:',
+        error
+      );
+
+    }
+
+
+    const expectedPdfCount =
+      getPdfEntries().length;
+
+
+    const cachedPdfRows =
+      cachedRows.filter(
+        row =>
+          row &&
+          row.pdf
+      );
+
+
+    const cachedPdfIds =
+      new Set(
+        cachedPdfRows.map(
+          row =>
+            row.bookId +
+            '|' +
+            row.pdf
+        )
+      );
+
+
+    const expectedPdfIds =
+      new Set(
+        getPdfEntries().map(
+          entry =>
+            entry.bookId +
+            '|' +
+            entry.pdf
+        )
+      );
+
+
+    const cacheComplete =
+      expectedPdfCount > 0 &&
+      cachedPdfIds.size ===
+        expectedPdfIds.size &&
+      [...expectedPdfIds].every(
+        id =>
+          cachedPdfIds.has(id)
+      );
+
+
+    let pdfRows = [];
+
+
+    if (cacheComplete) {
+
+      pdfRows =
+        cachedPdfRows;
+
+
+      console.log(
+        'Rāgānugā Search: saved index found.',
+        pdfRows.length,
+        'pages.'
+      );
+
+    } else {
+
+      try {
+
+        await clearSearchDatabase();
+
+      } catch (error) {
+
+        console.warn(
+          'Could not clear old search index:',
+          error
+        );
+
+      }
+
+
+      const built =
+        await buildPdfSearchIndex();
+
+
+      pdfRows =
+        built.rows;
+
+
+      try {
+
+        await saveSearchRows(
+          pdfRows
+        );
+
+
+        console.log(
+          'Rāgānugā Search: PDF index saved.',
+          pdfRows.length,
+          'pages.'
+        );
+
+      } catch (error) {
+
+        console.warn(
+          'Could not save PDF search index:',
+          error
+        );
+
+      }
+
+    }
+
+
+    state.searchIndex =
+      sampleResults.concat(
+        pdfRows
+      );
+
+
+    state.searchReady =
+      true;
+
+
+  } catch (error) {
+
+    console.error(
+      'Search index loading error:',
+      error
+    );
+
+
+    state.searchIndex =
+      [];
+
+    state.searchReady =
+      false;
+
+
+    toast(
+      state.lang === 'sl'
+        ? 'Iskanja ni bilo mogoče pripraviti.'
+        : 'Could not prepare the library search.'
+    );
+
+
+  } finally {
+
+    state.searchLoading =
+      false;
+
+
+    if (
+      state.screen === 'search'
+    ) {
+
+      render();
+
+    }
+
+  }
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function setSearchQuery(value) {
+
+  state.query =
+    value;
+
+
+  render();
+
+
+  if (
+    searchFocusFrame !== null
+  ) {
+
+    cancelAnimationFrame(
+      searchFocusFrame
+    );
+
+
+    searchFocusFrame =
+      null;
+
+  }
+
+
+  searchFocusFrame =
+    requestAnimationFrame(
+      () => {
+
+        searchFocusFrame =
+          null;
+
+
+        if (
+          state.screen !== 'search'
+        ) {
+
+          return;
+
+        }
+
+
+        const input =
+          document.querySelector(
+            '.search'
+          );
+
+
+        if (input) {
+
+          input.focus();
+
+
+          const end =
+            input.value.length;
+
+
+          input.setSelectionRange(
+            end,
+            end
+          );
+
+        }
+
+      }
+    );
+}
+
+
+function setSearchFilter(value) {
+
+  state.filter =
+    value;
+
+  save();
+  render();
+
+}
+
+
+function getVisibleSearchResults() {
+
+  const query =
+    normalizeSearchText(
+      state.query.trim()
+    );
+
+
+  let results =
+    state.searchIndex;
+
+
+  if (
+    state.filter ===
+    'Slovenian'
+  ) {
+
+    results =
+      results.filter(
+        item =>
+          item.bookId ===
+          'sample-book'
+      );
+
+  }
+
+
+  if (query) {
+
+    results =
+      results.filter(
+        item => {
+
+          const text =
+            item.normalized ||
+            normalizeSearchText(
+              [
+                item.bookTitle,
+                item.author,
+                item.chapterTitle,
+                item.ref,
+                item.sanskrit,
+                item.transliteration,
+                item.english,
+                item.slovenian
+              ].join(' ')
+            );
+
+
+          return text.includes(
+            query
+          );
+
+        }
+      );
+
+  }
+
+
+  return results;
+}
+
+
+function search() {
+
+  if (
+    !state.searchReady &&
+    !state.searchLoading
+  ) {
+
+    buildSearchIndex();
+
+  }
+
+
+  if (
+    !state.searchReady
+  ) {
+
+    return layout(`
+
+      <h2>
+        ${t('search')}
+      </h2>
+
+
+      <input
+        class="search"
+        value="${escapeAttribute(
+          state.query
+        )}"
+        oninput="
+          setSearchQuery(
+            this.value
+          )
+        "
+        placeholder="${t(
+          'acrossBooks'
+        )}">
+
+
+      <div
+        class="muted"
+        style="
+          margin-top:20px
+        ">
+
+        ${
+          state.searchLoading
+            ? t('preparingSearch')
+            : t('searching')
+        }
+
+      </div>
+
+
+      ${
+        state.searchIndex.length
+          ? `
+            <div
+              class="muted"
+              style="margin-top:10px">
+
+              ${state.searchIndex.length}
+              ${t('pagesIndexed')}
+
+            </div>
+          `
+          : ''
+      }
+
+    `);
+
+  }
+
+
+  const results =
+    getVisibleSearchResults();
+
+
+  return layout(`
+
+    <h2>
+      ${t('search')}
+    </h2>
+
+
+    <input
+      class="search"
+      value="${escapeAttribute(
+        state.query
+      )}"
+      oninput="
+        setSearchQuery(
+          this.value
+        )
+      "
+      placeholder="${t(
+        'acrossBooks'
+      )}">
+
+
+    <div
+      class="muted"
+      style="
+        margin-top:8px;
+        margin-bottom:16px
+      ">
+
+      ${t('searchHint')}
+
+    </div>
+
+
+    <div class="chips">
+
+      ${[
+        ['All books', t('allBooks')],
+        ['English', 'English'],
+        ['Slovenian', 'Slovenščina'],
+        ['Sanskrit', 'Sanskrit']
+      ].map(
+        ([value, label]) => `
+
+          <button
+            type="button"
+            class="chip ${
+              state.filter === value
+                ? 'on'
+                : ''
+            }"
+            onclick="
+              setSearchFilter(
+                '${escapeAttribute(
+                  value
+                )}'
+              )
+            ">
+
+            ${label}
+
+          </button>
+
+        `
+      ).join('')}
+
+    </div>
+
+
+    <div
+      class="muted"
+      style="
+        margin-bottom:8px
+      ">
+
+      ${results.length}
+      ${t('passages')}
+
+    </div>
+
+
+    ${
+      results.length
+        ? results
+            .slice(0, 100)
+            .map(
+              (
+                result,
+                index
+              ) => `
+
+                <div
+                  class="result"
+                  onclick="
+                    openSearchResult(
+                      ${index}
+                    )
+                  ">
+
+                  <div
+                    class="booktitle">
+
+                    ${escapeHtml(
+                      result.bookTitle
+                    )}
+
+                    ·
+
+                    ${escapeHtml(
+                      result.ref
+                    )}
+
+                  </div>
+
+
+                  <div
+                    class="muted">
+
+                    ${
+                      result.pdf
+                        ? escapeHtml(
+                            result.chapterTitle
+                          )
+                        : (
+                            escapeHtml(
+                              t(
+                                'chapterResult'
+                              )
+                            ) +
+                            ' ' +
+                            (
+                              Number(
+                                result.chapterIndex
+                              ) + 1
+                            ) +
+                            ' · ' +
+                            escapeHtml(
+                              result.chapterTitle
+                            )
+                          )
+                    }
+
+                  </div>
+
+
+                  <div
+                    style="
+                      font-size:13px;
+                      line-height:1.55;
+                      margin-top:4px
+                    ">
+
+                    ${escapeHtml(
+                      makeSearchSnippet(
+                        result
+                      )
+                    )}
+
+                  </div>
+
+
+                  ${
+                    result.pdf
+                      ? `
+
+                        <button
+                          type="button"
+                          class="chip on"
+                          style="
+                            margin-top:10px
+                          "
+                          onclick="
+                            event.stopPropagation();
+                            openPdf(
+                              '${escapeAttribute(
+                                result.pdf
+                              )}',
+                              ${Number(
+                                result.page
+                              )}
+                            );
+                          ">
+
+                          ${t('openPage')}
+
+                        </button>
+
+                      `
+                      : `
+                        <div
+                          class="muted"
+                          style="
+                            margin-top:7px;
+                            font-size:11px
+                          ">
+
+                          ${escapeHtml(
+                            result.sanskrit
+                          )}
+
+                        </div>
+                      `
+                  }
+
+                </div>
+
+              `
+            )
+            .join('')
+
+        : `
+
+          <div class="muted">
+            ${t('noResults')}
+          </div>
+
+        `
+    }
+
+
+    ${
+      results.length > 100
+        ? `
+
+          <div
+            class="muted"
+            style="
+              margin-top:16px;
+              padding-bottom:30px
+            ">
+
+            ${
+              state.lang === 'sl'
+                ? `Prikazanih je prvih 100 zadetkov od ${results.length}.`
+                : `Showing the first 100 results of ${results.length}.`
+            }
+
+          </div>
+
+        `
+        : ''
+    }
+
+  `);
+}
+
+
+function openSearchResult(index) {
+
+  const visibleResults =
+    getVisibleSearchResults();
+
+
+  const result =
+    visibleResults[index];
+
+
+  if (!result) {
+    return;
+  }
+
+
+  if (result.pdf) {
+
+    state.screen =
+      'search';
+
+
+    save();
+
+
+    openPdf(
+      result.pdf,
+      result.page
+    );
+
+
+    return;
+  }
+
+
+  state.book =
+    0;
+
+
+  state.loadedBookId =
+    'sample-book';
+
+
+  state.chapter =
+    Number(
+      result.chapterIndex
+    ) || 0;
+
+
+  state.screen =
+    'reader';
+
+
+  save();
+  render();
+
+
+  if (
+    !state.loadedBook ||
+    state.loadedBook.id !==
+      result.bookId
+  ) {
+
+    loadSampleBook()
+      .then(
+        () => {
+
+          state.chapter =
+            Number(
+              result.chapterIndex
+            ) || 0;
+
+
+          save();
+          render();
+
+
+          scrollToVerse(
+            result.ref
+          );
+
+        }
+      );
+
+  } else {
+
+    setTimeout(
+      () => {
+
+        scrollToVerse(
+          result.ref
+        );
+
+      },
+      100
+    );
+
+  }
+}
+
+
+function scrollToVerse(ref) {
+
+  setTimeout(
+    () => {
+
+      const verses =
+        document.querySelectorAll(
+          '.verse'
+        );
+
+
+      for (
+        const verse of verses
+      ) {
+
+        const reference =
+          verse.querySelector(
+            '.ref'
+          );
+
+
+        if (
+          reference &&
+          reference.textContent
+            .trim() ===
+            String(ref)
+        ) {
+
+          verse.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+
+
+          verse.style.outline =
+            '2px solid currentColor';
+
+
+          setTimeout(
+            () => {
+
+              verse.style.outline =
+                '';
+
+            },
+            1800
+          );
+
+
+          break;
+
+        }
+
+      }
+
+    },
+    150
+  );
+}
+
+
+/* =========================================================
+   AI SOURCE SELECTION
+   ========================================================= */
+
+function toggleLectureSource(index) {
+
+  if (
+    state.sources.includes(index)
+  ) {
+
+    state.sources =
+      state.sources.filter(
+        item =>
+          item !== index
+      );
+
+  } else {
+
+    state.sources = [
+      ...state.sources,
+      index
+    ];
+
+  }
+
+
+  save();
+  render();
+}
+
+
+function setLectureTopic(value) {
+
+  state.lectureTopic =
+    value;
+
+  save();
+}
+
+
+function setLectureLength(value) {
+
+  state.lectureLength =
+    String(value);
+
+  save();
+  render();
+}
+
+
+function setPoemPrompt(value) {
+
+  state.poemPrompt =
+    value;
+
+  save();
+}
+
+
+/* =========================================================
+   AI PASSAGE SELECTION
+   ========================================================= */
+
+function findAiPassages(
+  instructionText
+) {
+
+  const normalizedInstruction =
+    normalizeSearchText(
+      String(
+        instructionText || ''
+      ).trim()
+    );
+
+
+  const allowedBookIds =
+    new Set(
+      state.sources
+        .map(
+          index =>
+            BOOKS[index]?.id
+        )
+        .filter(Boolean)
+    );
+
+
+  let candidates =
+    state.searchIndex.filter(
+      row =>
+        row &&
+        row.pdf &&
+        allowedBookIds.has(
+          row.bookId
+        )
+    );
+
+
+  const words =
+    normalizedInstruction
+      .split(/\s+/)
+      .map(
+        word =>
+          normalizeSearchText(
+            word.replace(
+              /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,
+              ''
+            )
+          )
+      )
+      .filter(
+        word =>
+          word.length >= 3
+      );
+
+
+  candidates =
+    candidates.map(
+      row => {
+
+        const text =
+          row.normalized ||
+          normalizeSearchText(
+            [
+              row.bookTitle,
+              row.author,
+              row.chapterTitle,
+              row.ref,
+              row.sanskrit,
+              row.transliteration,
+              row.english,
+              row.slovenian
+            ].join(' ')
+          );
+
+
+        let score = 0;
+
+
+        words.forEach(
+          word => {
+
+            if (
+              text.includes(word)
+            ) {
+
+              score += 1;
+
+            }
+
+          }
+        );
+
+
+        if (
+          normalizedInstruction &&
+          text.includes(
+            normalizedInstruction
+          )
+        ) {
+
+          score += 5;
+
+        }
+
+
+        const titleText =
+          normalizeSearchText(
+            row.bookTitle || ''
+          );
+
+
+        const authorText =
+          normalizeSearchText(
+            row.author || ''
+          );
+
+
+        words.forEach(
+          word => {
+
+            if (
+              titleText.includes(
+                word
+              )
+            ) {
+
+              score += 2;
+
+            }
+
+
+            if (
+              authorText.includes(
+                word
+              )
+            ) {
+
+              score += 1;
+
+            }
+
+          }
+        );
+
+
+        return {
+
+          ...row,
+
+          aiScore:
+            score
+
+        };
+
+      }
+    );
+
+
+  candidates =
+    candidates
+      .filter(
+        row =>
+          row.aiScore > 0
+      )
+      .sort(
+        (a, b) => {
+
+          if (
+            b.aiScore !==
+            a.aiScore
+          ) {
+
+            return (
+              b.aiScore -
+              a.aiScore
+            );
+
+          }
+
+
+          return (
+            Number(a.page || 0) -
+            Number(b.page || 0)
+          );
+
+        }
+      );
+
+
+  return candidates
+    .slice(0, 24)
+    .map(
+      row => {
+
+        const rawText =
+          String(
+            row.sanskrit ||
+            row.english ||
+            ''
+          )
+          .replace(/\s+/g, ' ')
+          .trim();
+
+
+        const text =
+          rawText.length > 2600
+            ? rawText.slice(
+                0,
+                2600
+              ) + '…'
+            : rawText;
+
+
+        return {
+
+          bookTitle:
+            row.bookTitle ||
+            '',
+
+          author:
+            row.author ||
+            '',
+
+          page:
+            row.page ||
+            '',
+
+          text
+
+        };
+
+      }
+    );
+}
+
+
+/* =========================================================
+   SAVE GENERATED WORK
+   ========================================================= */
+
+function saveGeneratedWork(work) {
+
+  const item = {
+
+    id:
+      'work-' +
+      Date.now() +
+      '-' +
+      Math.random()
+        .toString(36)
+        .slice(2, 8),
+
+    type:
+      work.type,
+
+    title:
+      work.title ||
+      (
+        work.type === 'poem'
+          ? t('aiPoem')
+          : t('aiLecture')
+      ),
+
+    prompt:
+      work.prompt ||
+      '',
+
+    language:
+      work.language ||
+      '',
+
+    length:
+      work.length ||
+      '',
+
+    content:
+      work.content ||
+      '',
+
+    passages:
+      Array.isArray(work.passages)
+        ? work.passages
+        : [],
+
+    createdAt:
+      new Date().toISOString()
+
+  };
+
+
+  state.works = [
+    item,
+    ...state.works
+      .filter(
+        existing =>
+          existing &&
+          existing.id !==
+            item.id
+      )
+  ];
+
+
+  state.works =
+    state.works.slice(
+      0,
+      20
+    );
+
+
+  save();
+
+  return item;
+}
+
+
+function formatWorkDate(
+  value
+) {
+
+  if (!value) {
+    return '';
+  }
+
+
+  try {
+
+    return new Date(
+      value
+    ).toLocaleString(
+      state.lang === 'sl'
+        ? 'sl-SI'
+        : 'en-US',
+      {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      }
+    );
+
+  } catch (error) {
+
+    return '';
+
+  }
+}
+
+
+/* =========================================================
+   DOWNLOAD GENERATED WORK
+   ========================================================= */
+
+function downloadSavedWork(index) {
+
+  const work =
+    state.works[index];
+
+  if (!work) {
+    return;
+  }
+
+
+  const isPoem =
+    work.type === 'poem';
+
+
+  const typeLabel =
+    isPoem
+      ? (
+          state.lang === 'sl'
+            ? 'AI pesem'
+            : 'AI Poem'
+        )
+      : (
+          state.lang === 'sl'
+            ? 'AI predavanje'
+            : 'AI Lecture'
+        );
+
+
+  const title =
+    String(
+      work.title ||
+      typeLabel
+    )
+    .trim();
+
+
+  const prompt =
+    String(
+      work.prompt ||
+      ''
+    )
+    .trim();
+
+
+  const content =
+    String(
+      work.content ||
+      ''
+    )
+    .trim();
+
+
+  /*
+   * AI včasih vrne HTML entitete,
+   * npr. &#x20; namesto presledka.
+   * Tukaj jih najprej pretvorimo
+   * nazaj v prave znake.
+   */
+
+  function decodeHtmlEntities(value) {
+
+    const textarea =
+      document.createElement(
+        'textarea'
+      );
+
+    textarea.innerHTML =
+      String(
+        value ?? ''
+      );
+
+    return textarea.value;
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(
+      value ?? ''
+    )
+      .replace(
+        /&/g,
+        '&amp;'
+      )
+      .replace(
+        /</g,
+        '&lt;'
+      )
+      .replace(
+        />/g,
+        '&gt;'
+      )
+      .replace(
+        /"/g,
+        '&quot;'
+      )
+      .replace(
+        /'/g,
+        '&#039;'
+      );
+
+  }
+
+
+  function markdownToHtml(text) {
+
+    const decoded =
+      decodeHtmlEntities(
+        text
+      );
+
+
+    let html =
+      escapeHtml(
+        decoded
+      );
+
+
+    /*
+     * Markdown headings
+     */
+
+    html =
+      html.replace(
+        /^### (.*)$/gm,
+        '<h3>$1</h3>'
+      );
+
+
+    html =
+      html.replace(
+        /^## (.*)$/gm,
+        '<h2>$1</h2>'
+      );
+
+
+    html =
+      html.replace(
+        /^# (.*)$/gm,
+        '<h1>$1</h1>'
+      );
+
+
+    /*
+     * Bold
+     */
+
+    html =
+      html.replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong>$1</strong>'
+      );
+
+
+    /*
+     * Italic
+     */
+
+    html =
+      html.replace(
+        /(?<!\*)\*(?!\s)(.*?)(?<!\s)\*(?!\*)/g,
+        '<em>$1</em>'
+      );
+
+
+    /*
+     * Horizontal line
+     */
+
+    html =
+      html.replace(
+        /^---$/gm,
+        '<hr>'
+      );
+
+
+    /*
+     * Odstavki
+     */
+
+    const blocks =
+      html
+        .split(
+          /\n\s*\n/
+        )
+        .map(
+          block =>
+            block.trim()
+        )
+        .filter(
+          block =>
+            block
+        );
+
+
+    return blocks
+      .map(
+        block => {
+
+          if (
+            block.startsWith('<h1>')
+            ||
+            block.startsWith('<h2>')
+            ||
+            block.startsWith('<h3>')
+            ||
+            block === '<hr>'
+          ) {
+
+            return block;
+
+          }
+
+
+          return (
+            '<p>' +
+            block
+              .replace(
+                /\n/g,
+                '<br>'
+              ) +
+            '</p>'
+          );
+
+        }
+      )
+      .join('\n');
+
+  }
+
+
+  const contentHtml =
+    markdownToHtml(
+      content
+    );
+
+
+  const promptHtml =
+    prompt
+      ? markdownToHtml(
+          prompt
+        )
+      : '';
+
+
+  const sourceList =
+    Array.isArray(
+      work.passages
+    )
+      ? work.passages
+          .map(
+            (
+              passage,
+              sourceIndex
+            ) => {
+
+              const book =
+                passage.bookTitle ||
+                '';
+
+              const author =
+                passage.author ||
+                '';
+
+              const page =
+                passage.page
+                  ? (
+                      state.lang === 'sl'
+                        ? ` · stran ${passage.page}`
+                        : ` · page ${passage.page}`
+                    )
+                  : '';
+
+
+              return `
+                <li>
+                  ${escapeHtml(book)}
+                  ${
+                    author
+                      ? ` — ${escapeHtml(author)}`
+                      : ''
+                  }
+                  ${page}
+                </li>
+              `;
+
+            }
+          )
+          .join('\n')
+      : '';
+
+
+  const languageCode =
+    state.lang === 'sl'
+      ? 'sl'
+      : 'en';
+
+
+  const promptLabel =
+    state.lang === 'sl'
+      ? 'Navodilo'
+      : 'Prompt';
+
+
+  const sourcesLabel =
+    state.lang === 'sl'
+      ? 'Viri'
+      : 'Sources';
+
+
+  const createdLabel =
+    state.lang === 'sl'
+      ? 'Ustvarjeno'
+      : 'Created';
+
+
+  const durationLabel =
+    state.lang === 'sl'
+      ? 'Trajanje'
+      : 'Duration';
+
+
+  const noSources =
+    state.lang === 'sl'
+      ? 'Viri niso navedeni.'
+      : 'No sources listed.';
+
+
+  const htmlDocument = `
+<!doctype html>
+
+<html lang="${languageCode}">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<meta
+  name="format-detection"
+  content="telephone=no"
+>
+
+<title>
+  ${escapeHtml(title)}
+</title>
+
+
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+>
+
+<link
+  rel="preconnect"
+  href="https://fonts.gstatic.com"
+  crossorigin
+>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  body {
+
+    margin: 0;
+
+    padding: 40px 20px;
+
+    background:
+      #f5f2eb;
+
+    color:
+      #2d2924;
+
+    font-family:
+      "Noto Sans",
+      "Noto Sans Devanagari",
+      "Noto Sans Bengali",
+      sans-serif;
+
+    line-height:
+      1.78;
+
+    font-size:
+      16px;
+
+  }
+
+
+  .page {
+
+    width:
+      min(
+        920px,
+        100%
+      );
+
+    margin:
+      0 auto;
+
+    background:
+      #ffffff;
+
+    padding:
+      52px 58px;
+
+    border-radius:
+      18px;
+
+    box-shadow:
+      0 12px 40px
+      rgba(
+        0,
+        0,
+        0,
+        0.08
+      );
+
+  }
+
+
+  h1 {
+
+    margin:
+      0 0 12px;
+
+    font-family:
+      "Noto Serif",
+      "Noto Serif Devanagari",
+      serif;
+
+    font-size:
+      2.15rem;
+
+    line-height:
+      1.3;
+
+    font-weight:
+      700;
+
+  }
+
+
+  h2 {
+
+    margin:
+      36px 0 14px;
+
+    font-family:
+      "Noto Serif",
+      "Noto Serif Devanagari",
+      serif;
+
+    font-size:
+      1.55rem;
+
+    line-height:
+      1.4;
+
+  }
+
+
+  h3 {
+
+    margin:
+      28px 0 12px;
+
+    font-family:
+      "Noto Serif",
+      "Noto Serif Devanagari",
+      serif;
+
+    font-size:
+      1.2rem;
+
+    line-height:
+      1.45;
+
+  }
+
+
+  p {
+
+    margin:
+      0 0 18px;
+
+  }
+
+
+  strong {
+
+    font-weight:
+      700;
+
+  }
+
+
+  em {
+
+    font-style:
+      italic;
+
+  }
+
+
+  hr {
+
+    margin:
+      32px 0;
+
+    border:
+      0;
+
+    border-top:
+      1px solid
+      #ddd6ca;
+
+  }
+
+
+  .meta {
+
+    margin:
+      8px 0;
+
+  }
+
+
+  .meta strong {
+
+    margin-right:
+      6px;
+
+  }
+
+
+  .sources {
+
+    margin-top:
+      44px;
+
+    padding-top:
+      26px;
+
+    border-top:
+      1px solid
+      #ddd6ca;
+
+  }
+
+
+  .sources h2 {
+
+    margin-top:
+      0;
+
+  }
+
+
+  .sources ul {
+
+    margin:
+      0;
+
+    padding-left:
+      26px;
+
+  }
+
+
+  .sources li {
+
+    margin-bottom:
+      8px;
+
+  }
+
+
+  @media (
+    max-width: 700px
+  ) {
+
+    body {
+
+      padding:
+        0;
+
+      background:
+        #ffffff;
+
+    }
+
+
+    .page {
+
+      width:
+        100%;
+
+      padding:
+        28px 20px;
+
+      border-radius:
+        0;
+
+      box-shadow:
+        none;
+
+    }
+
+
+    h1 {
+
+      font-size:
+        1.65rem;
+
+    }
+
+
+    h2 {
+
+      font-size:
+        1.35rem;
+
+    }
+
+
+    h3 {
+
+      font-size:
+        1.1rem;
+
+    }
+
+  }
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="page">
+
+
+  <h1>
+    ${escapeHtml(title)}
+  </h1>
+
+
+  <div class="meta">
+
+    <strong>
+      ${escapeHtml(typeLabel)}
+    </strong>
+
+  </div>
+
+
+  ${
+    work.length
+      ? `
+        <div class="meta">
+
+          <strong>
+            ${escapeHtml(durationLabel)}:
+          </strong>
+
+          ${escapeHtml(
+            work.length
+          )}
+
+          ${
+            state.lang === 'sl'
+              ? ' minut'
+              : ' minutes'
+          }
+
+        </div>
+      `
+      : ''
+  }
+
+
+  ${
+    prompt
+      ? `
+
+        <div
+          class="meta"
+          style="margin-top:20px">
+
+          <strong>
+            ${escapeHtml(promptLabel)}:
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          ${promptHtml}
+
+        </div>
+
+      `
+      : ''
+  }
+
+
+  <hr>
+
+
+  <article>
+
+    ${contentHtml}
+
+  </article>
+
+
+  <section class="sources">
+
+    <h2>
+      ${escapeHtml(sourcesLabel)}
+    </h2>
+
+
+    ${
+      sourceList
+        ? `
+          <ul>
+            ${sourceList}
+          </ul>
+        `
+        : `
+          <p>
+            ${escapeHtml(
+              noSources
+            )}
+          </p>
+        `
+    }
+
+  </section>
+
+
+  <div
+    class="meta"
+    style="margin-top:30px"
+  >
+
+    <strong>
+      ${escapeHtml(createdLabel)}:
+    </strong>
+
+    ${escapeHtml(
+      formatWorkDate(
+        work.createdAt
+      )
+    )}
+
+  </div>
+
+
+</main>
+
+</body>
+
+</html>
+  `.trim();
+
+
+  const blob =
+    new Blob(
+      [
+        htmlDocument
+      ],
+      {
+        type:
+          'text/html;charset=utf-8'
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const safeName =
+    title
+      .replace(
+        /[<>:"/\\|?*\x00-\x1F]/g,
+        ''
+      )
+      .replace(
+        /\s+/g,
+        '-'
+      )
+      .slice(
+        0,
+        100
+      )
+      .trim() ||
+    'raganuga-work';
+
+
+  const link =
+    document.createElement(
+      'a'
+    );
+
+
+  link.href =
+    url;
+
+
+  link.download =
+    safeName +
+    '.html';
+
+
+  document.body.appendChild(
+    link
+  );
+
+
+  link.click();
+
+
+  link.remove();
+
+
+  setTimeout(
+    () => {
+
+      URL.revokeObjectURL(
+        url
+      );
+
+    },
+    1000
+  );
+
+
+  toast(
+    state.lang === 'sl'
+      ? 'Delo je preneseno.'
+      : 'Work downloaded.'
+  );
+
+}
+
+
+/* =========================================================
+   OPEN / DELETE SAVED WORK
+   ========================================================= */
+
+function openSavedWork(index) {
+
+  const work =
+    state.works[index];
+
+
+  if (!work) {
+    return;
+  }
+
+
+  if (
+    work.type === 'poem'
+  ) {
+
+    state.creationType =
+      'poem';
+
+    state.poemPrompt =
+      work.prompt ||
+      '';
+
+    state.generatedPoem =
+      work.content ||
+      '';
+
+    state.poemPassages =
+      Array.isArray(
+        work.passages
+      )
+        ? work.passages
+        : [];
+
+    state.poemError =
+      '';
+
+    state.poemGenerating =
+      false;
+
+  } else {
+
+    state.creationType =
+      'lecture';
+
+    state.lectureTopic =
+      work.prompt ||
+      work.title ||
+      '';
+
+    state.generatedLecture =
+      work.content ||
+      '';
+
+    state.lectureLength =
+      String(
+        work.length ||
+        '20'
+      );
+
+    state.lecturePassages =
+      Array.isArray(
+        work.passages
+      )
+        ? work.passages
+        : [];
+
+    state.lectureError =
+      '';
+
+    state.lectureGenerating =
+      false;
+
+  }
+
+
+  state.screen =
+    'result';
+
+
+  save();
+  render();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+
+function removeSavedWork(index) {
+
+  if (
+    index < 0 ||
+    index >= state.works.length
+  ) {
+
+    return;
+
+  }
+
+
+  state.works.splice(
+    index,
+    1
+  );
+
+
+  save();
+  render();
+
+
+  setTimeout(
+    () => {
+
+      toast(
+        t('removed')
+      );
+
+    },
+    50
+  );
+}
+
+
+/* =========================================================
+   AI LECTURE
+   ========================================================= */
+
+async function generate() {
+
+  if (
+    !state.sources.length
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej izberi vsaj eno knjigo.'
+        : 'Please select at least one book.'
+    );
+
+    return;
+  }
+
+
+  if (
+    !state.lectureTopic.trim()
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej vpiši temo predavanja.'
+        : 'Please enter a lecture topic.'
+    );
+
+    return;
+  }
+
+
+  state.creationType =
+    'lecture';
+
+  state.lectureGenerating =
+    true;
+
+  state.generatedLecture =
+    '';
+
+  state.lectureError =
+    '';
+
+  state.lecturePassages =
+    [];
+
+  state.screen =
+    'result';
+
+
+  save();
+  render();
+
+
+  try {
+
+    if (!state.searchReady) {
+
+      await buildSearchIndex();
+
+    }
+
+
+    const selected =
+      findAiPassages(
+        state.lectureTopic.trim()
+      );
+
+
+    if (!selected.length) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'V izbranih knjigah za to temo ni bilo mogoče najti ustreznih strani.'
+          : 'No relevant pages were found in the selected books.'
+      );
+
+    }
+
+
+    state.lecturePassages =
+      selected;
+
+
+    save();
+    render();
+
+
+    const response =
+      await fetch(
+        'https://raganuga-lecture.eyeslotus.workers.dev',
+        {
+          method: 'POST',
+
+          headers: {
+
+            'Content-Type':
+              'application/json'
+
+          },
+
+          body:
+            JSON.stringify({
+
+              type:
+                'lecture',
+
+              topic:
+                state.lectureTopic.trim(),
+
+              prompt:
+                state.lectureTopic.trim(),
+
+              language:
+                state.lang === 'sl'
+                  ? 'Slovenščina'
+                  : 'English',
+
+              length:
+                state.lectureLength,
+
+              passages:
+                selected
+
+            })
+        }
+      );
+
+
+    let data =
+      null;
+
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch (error) {
+
+      throw new Error(
+        'The AI service returned an invalid response.'
+      );
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data?.error ||
+        `AI service returned HTTP ${response.status}.`
+      );
+
+    }
+
+
+    state.generatedLecture =
+      String(
+        data.lecture ||
+        data.work ||
+        data.content ||
+        ''
+      ).trim();
+
+
+    if (
+      !state.generatedLecture
+    ) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'AI ni vrnil vsebine predavanja.'
+          : 'The AI returned an empty lecture.'
+      );
+
+    }
+
+
+    saveGeneratedWork({
+
+      type:
+        'lecture',
+
+      title:
+        state.lectureTopic.trim(),
+
+      prompt:
+        state.lectureTopic.trim(),
+
+      language:
+        state.lang === 'sl'
+          ? 'Slovenščina'
+          : 'English',
+
+      length:
+        state.lectureLength,
+
+      content:
+        state.generatedLecture,
+
+      passages:
+        state.lecturePassages
+
+    });
+
+
+    state.lectureError =
+      '';
+
+    state.lectureGenerating =
+      false;
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      'Lecture generation error:',
+      error
+    );
+
+
+    state.lectureGenerating =
+      false;
+
+
+    state.lectureError =
+      error?.message ||
+      (
+        state.lang === 'sl'
+          ? 'Predavanja ni bilo mogoče ustvariti.'
+          : 'Could not generate the lecture.'
+      );
+
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+  }
+}
+
+
+/* =========================================================
+   AI POEM
+   ========================================================= */
+
+async function generatePoem() {
+
+  if (
+    !state.sources.length
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej izberi vsaj eno knjigo.'
+        : 'Please select at least one book.'
+    );
+
+    return;
+  }
+
+
+  if (
+    !state.poemPrompt.trim()
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej napiši navodilo za pesem.'
+        : 'Please enter a poem prompt.'
+    );
+
+    return;
+  }
+
+
+  state.creationType =
+    'poem';
+
+  state.poemGenerating =
+    true;
+
+  state.generatedPoem =
+    '';
+
+  state.poemError =
+    '';
+
+  state.poemPassages =
+    [];
+
+  state.screen =
+    'result';
+
+
+  save();
+  render();
+
+
+  try {
+
+    if (!state.searchReady) {
+
+      await buildSearchIndex();
+
+    }
+
+
+    const selected =
+      findAiPassages(
+        state.poemPrompt.trim()
+      );
+
+
+    if (!selected.length) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'V izbranih knjigah za to pesem ni bilo mogoče najti ustreznih strani.'
+          : 'No relevant pages were found in the selected books.'
+      );
+
+    }
+
+
+    state.poemPassages =
+      selected;
+
+
+    save();
+    render();
+
+
+    const response =
+      await fetch(
+        'https://raganuga-lecture.eyeslotus.workers.dev',
+        {
+          method: 'POST',
+
+          headers: {
+
+            'Content-Type':
+              'application/json'
+
+          },
+
+          body:
+            JSON.stringify({
+
+              type:
+                'poem',
+
+              prompt:
+                state.poemPrompt.trim(),
+
+              language:
+                state.lang === 'sl'
+                  ? 'Slovenščina'
+                  : 'English',
+
+              passages:
+                selected
+
+            })
+        }
+      );
+
+
+    let data =
+      null;
+
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch (error) {
+
+      throw new Error(
+        'The AI service returned an invalid response.'
+      );
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data?.error ||
+        `AI service returned HTTP ${response.status}.`
+      );
+
+    }
+
+
+    state.generatedPoem =
+      String(
+        data.poem ||
+        data.work ||
+        data.content ||
+        ''
+      ).trim();
+
+
+    if (
+      !state.generatedPoem
+    ) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'AI ni vrnil pesmi.'
+          : 'The AI returned an empty poem.'
+      );
+
+    }
+
+
+    saveGeneratedWork({
+
+      type:
+        'poem',
+
+      title:
+        state.poemPrompt.trim(),
+
+      prompt:
+        state.poemPrompt.trim(),
+
+      language:
+        state.lang === 'sl'
+          ? 'Slovenščina'
+          : 'English',
+
+      content:
+        state.generatedPoem,
+
+      passages:
+        state.poemPassages
+
+    });
+
+
+    state.poemError =
+      '';
+
+    state.poemGenerating =
+      false;
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      'Poem generation error:',
+      error
+    );
+
+
+    state.poemGenerating =
+      false;
+
+
+    state.poemError =
+      error?.message ||
+      (
+        state.lang === 'sl'
+          ? 'Pesmi ni bilo mogoče ustvariti.'
+          : 'Could not generate the poem.'
+      );
+
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+  }
+}
+
+
+/* =========================================================
+   CREATE
+   ========================================================= */
+
+function create() {
+
+  const selectedCount =
+    state.sources.length;
+
+
+  if (
+    state.lectureGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+        <h2 style="margin-top:20px">
+
+          ${
+            state.lang === 'sl'
+              ? 'AI pripravlja predavanje…'
+              : 'AI is preparing your lecture…'
+          }
+
+        </h2>
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.lectureTopic
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+
+  }
+
+
+  if (
+    state.poemGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+        <h2 style="margin-top:20px">
+
+          ${
+            state.lang === 'sl'
+              ? 'AI pripravlja pesem…'
+              : 'AI is preparing your poem…'
+          }
+
+        </h2>
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.poemPrompt
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+
+  }
+
+
+  return layout(`
+
+    <div class="eyebrow">
+      ${t('create')}
+    </div>
+
+
+    <h1>
+      ${t('create')}
+    </h1>
+
+
+    <div class="section card">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:12px;
+          margin-bottom:14px
+        ">
+
+        <h3 style="margin:0">
+          ${t('chooseBooks')}
+        </h3>
+
+        <span class="muted">
+          ${selectedCount}
+          ${t('selectedBooks')}
+        </span>
+
+      </div>
+
+
+      <div
+        style="
+          display:grid;
+          gap:10px
+        ">
+
+        ${BOOKS.map(
+          (book, index) => {
+
+            const selected =
+              state.sources.includes(
+                index
+              );
+
+
+            return `
+
+              <button
+                type="button"
+                class="select ${
+                  selected
+                    ? 'on'
+                    : ''
+                }"
+                style="
+                  text-align:left;
+                  padding:15px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:space-between;
+                  gap:12px
+                "
+                onclick="
+                  toggleLectureSource(
+                    ${index}
+                  )
+                ">
+
+                <span
+                  style="
+                    display:block;
+                    min-width:0
+                  ">
+
+                  <strong>
+                    ${escapeHtml(
+                      book.short
+                    )}
+                  </strong>
+
+                  <span
+                    class="muted"
+                    style="
+                      display:block;
+                      margin-top:4px
+                    ">
+
+                    ${escapeHtml(
+                      book.author
+                    )}
+
+                  </span>
+
+                </span>
+
+
+                <span
+                  style="
+                    font-size:20px;
+                    flex:0 0 auto
+                  ">
+
+                  ${
+                    selected
+                      ? '✓'
+                      : '○'
+                  }
+
+                </span>
+
+              </button>
+
+            `;
+
+          }
+        ).join('')}
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         AI LECTURE
+         ===================================================== -->
+
+    <div class="card">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:12px
+        ">
+
+        <h2 style="margin:0">
+          ${t('aiLecture')}
+        </h2>
+
+      </div>
+
+
+      <p
+        class="muted"
+        style="
+          margin-top:8px;
+          margin-bottom:18px
+        ">
+
+        ${
+          state.lang === 'sl'
+            ? 'Ustvari predavanje iz izbranih knjig.'
+            : 'Create a lecture from the selected books.'
+        }
+
+      </p>
+
+
+      <h3>
+        ${t('lectureTopic')}
+      </h3>
+
+
+      <textarea
+        class="textarea"
+        style="
+          margin-top:10px;
+          min-height:130px
+        "
+        oninput="
+          setLectureTopic(
+            this.value
+          )
+        "
+        placeholder="${t(
+          'lectureTopicPlaceholder'
+        )}">${escapeHtml(
+          state.lectureTopic
+        )}</textarea>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        ${t('lectureLength')}
+      </h3>
+
+
+      <div
+        class="formgrid"
+        style="margin-top:10px">
+
+        ${[
+          ['10', t('minutes10')],
+          ['20', t('minutes20')],
+          ['40', t('minutes40')],
+          ['60', t('minutes60')],
+          ['120', t('minutes120')]
+        ].map(
+          ([value, label]) => `
+
+            <button
+              type="button"
+              class="select ${
+                String(
+                  state.lectureLength
+                ) ===
+                String(value)
+                  ? 'on'
+                  : ''
+              }"
+              onclick="
+                setLectureLength(
+                  '${value}'
+                )
+              ">
+
+              ${label}
+
+            </button>
+
+          `
+        ).join('')}
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        ${t('lectureLanguage')}
+      </h3>
+
+
+      <div
+        class="chips"
+        style="margin-top:10px">
+
+        <button
+          type="button"
+          class="chip ${
+            state.lang === 'sl'
+              ? 'on'
+              : ''
+          }"
+          onclick="
+            setLanguage('sl')
+          ">
+
+          🇸🇮 Slovenščina
+
+        </button>
+
+
+        <button
+          type="button"
+          class="chip ${
+            state.lang === 'en'
+              ? 'on'
+              : ''
+          }"
+          onclick="
+            setLanguage('en')
+          ">
+
+          🇬🇧 English
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="primary"
+      onclick="generate()">
+
+      ✦ ${t('createLecture')}
+
+    </button>
+
+
+    <div
+      class="muted"
+      style="
+        text-align:center;
+        margin-top:12px
+      ">
+
+      ${selectedCount}
+      ${t('selectedBooks')}
+
+    </div>
+
+
+    <!-- =====================================================
+         AI POEM
+         ===================================================== -->
+
+    <div
+      class="section card"
+      style="margin-top:32px">
+
+      <h2 style="margin:0">
+        ${t('aiPoem')}
+      </h2>
+
+
+      <p
+        class="muted"
+        style="
+          margin-top:8px;
+          margin-bottom:18px
+        ">
+
+        ${
+          state.lang === 'sl'
+            ? 'Pesem opiši popolnoma po svoje. V prompt lahko napišeš število verzov, jezik, slog, temo, razpoloženje in vse druge podrobnosti.'
+            : 'Describe the poem exactly as you want it. You can specify the number of verses, language, style, theme, mood and anything else.'
+        }
+
+      </p>
+
+
+      <h3>
+        ${t('poemPrompt')}
+      </h3>
+
+
+      <textarea
+        class="textarea"
+        style="
+          margin-top:10px;
+          min-height:190px
+        "
+        oninput="
+          setPoemPrompt(
+            this.value
+          )
+        "
+        placeholder="${t(
+          'poemPromptPlaceholder'
+        )}">${escapeHtml(
+          state.poemPrompt
+        )}</textarea>
+
+
+      <button
+        type="button"
+        class="primary"
+        style="margin-top:16px"
+        onclick="generatePoem()">
+
+        ✦ ${t('createPoem')}
+
+      </button>
+
+
+      <div
+        class="muted"
+        style="
+          text-align:center;
+          margin-top:12px
+        ">
+
+        ${selectedCount}
+        ${t('selectedBooks')}
+
+      </div>
+
+    </div>
+
+  `);
+}
+
+
+/* =========================================================
+   RESULT FORMATTING
+   ========================================================= */
+
+function formatLecture(text) {
+
+  const lines =
+    String(text || '')
+      .split(/\r?\n/);
+
+
+  return lines
+    .map(
+      line => {
+
+        const clean =
+          line.trim();
+
+
+        if (!clean) {
+
+          return (
+            '<div style="height:10px"></div>'
+          );
+
+        }
+
+
+        const escaped =
+          escapeHtml(clean);
+
+
+        if (
+          escaped.startsWith(
+            '### '
+          )
+        ) {
+
+          return `
+
+            <h4
+              style="margin-top:24px">
+
+              ${escaped.slice(4)}
+
+            </h4>
+
+          `;
+
+        }
+
+
+        if (
+          escaped.startsWith(
+            '## '
+          )
+        ) {
+
+          return `
+
+            <h3
+              style="margin-top:28px">
+
+              ${escaped.slice(3)}
+
+            </h3>
+
+          `;
+
+        }
+
+
+        if (
+          escaped.startsWith(
+            '# '
+          )
+        ) {
+
+          return `
+
+            <h2
+              style="margin-top:28px">
+
+              ${escaped.slice(2)}
+
+            </h2>
+
+          `;
+
+        }
+
+
+        const formatted =
+          escaped.replace(
+            /\*\*(.*?)\*\*/g,
+            '<strong>$1</strong>'
+          );
+
+
+        return `
+
+          <p class="english">
+            ${formatted}
+          </p>
+
+        `;
+
+      }
+    )
+    .join('');
+}
+
+
+function formatPoem(text) {
+
+  const lines =
+    String(text || '')
+      .split(/\r?\n/);
+
+
+  return `
+
+    <div
+      style="
+        max-width:850px;
+        margin:0 auto;
+        text-align:left
+      ">
+
+      ${
+        lines
+          .map(
+            line => {
+
+              const clean =
+                line.trim();
+
+
+              if (!clean) {
+
+                return (
+                  '<div style="height:10px"></div>'
+                );
+
+              }
+
+
+              const escaped =
+                escapeHtml(clean);
+
+
+              if (
+                escaped.startsWith(
+                  '### '
+                )
+              ) {
+
+                return `
+
+                  <h4
+                    style="
+                      margin-top:24px;
+                      margin-bottom:8px
+                    ">
+
+                    ${escaped.slice(4)}
+
+                  </h4>
+
+                `;
+
+              }
+
+
+              if (
+                escaped.startsWith(
+                  '## '
+                )
+              ) {
+
+                return `
+
+                  <h3
+                    style="
+                      margin-top:28px;
+                      margin-bottom:10px
+                    ">
+
+                    ${escaped.slice(3)}
+
+                  </h3>
+
+                `;
+
+              }
+
+
+              if (
+                escaped.startsWith(
+                  '# '
+                )
+              ) {
+
+                return `
+
+                  <h2
+                    style="
+                      margin-top:28px;
+                      margin-bottom:12px
+                    ">
+
+                    ${escaped.slice(2)}
+
+                  </h2>
+
+                `;
+
+              }
+
+
+              const formatted =
+                escaped.replace(
+                  /\*\*(.*?)\*\*/g,
+                  '<strong>$1</strong>'
+                );
+
+
+              return `
+
+                <div
+                  style="
+                    font-size:17px;
+                    line-height:1.9;
+                    margin:0 0 6px;
+                  ">
+
+                  ${formatted}
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join('')
+      }
+
+    </div>
+
+  `;
+}
+
+
+/* =========================================================
+   RESULT
+   ========================================================= */
+
+function result() {
+
+  if (
+    state.lectureGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+        <h2 style="margin-top:20px">
+
+          ${
+            state.lang === 'sl'
+              ? 'AI pripravlja predavanje…'
+              : 'AI is preparing your lecture…'
+          }
+
+        </h2>
+
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.lectureTopic
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+  }
+
+
+  if (
+    state.poemGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+        <h2 style="margin-top:20px">
+
+          ${
+            state.lang === 'sl'
+              ? 'AI pripravlja pesem…'
+              : 'AI is preparing your poem…'
+          }
+
+        </h2>
+
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.poemPrompt
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+  }
+
+
+  if (
+    state.creationType ===
+    'poem'
+  ) {
+
+    if (
+      state.poemError
+    ) {
+
+      return layout(`
+
+        <div class="top">
+
+          <button
+            type="button"
+            class="back"
+            onclick="go('create')">
+
+            ‹
+
+          </button>
+
+
+          <div style="flex:1">
+
+            <strong>
+              ${t('aiPoem')}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="section card">
+
+          <h3>
+
+            ${
+              state.lang === 'sl'
+                ? 'Pesmi ni bilo mogoče ustvariti'
+                : 'Could not create the poem'
+            }
+
+          </h3>
+
+
+          <p class="muted">
+
+            ${escapeHtml(
+              state.poemError
+            )}
+
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="primary"
+          onclick="generatePoem()">
+
+          ✦ ${t('createPoem')}
+
+        </button>
+
+      `);
+    }
+
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('create')">
+
+          ‹
+
+        </button>
+
+
+        <div style="flex:1">
+
+          <strong>
+            ${t('aiPoem')}
+          </strong>
+
+
+          <div class="muted">
+
+            ${state.sources.length}
+            ${t('selectedBooks')}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="eyebrow"
+        style="margin-top:10px">
+
+        ${t('generatedWork')}
+
+      </div>
+
+
+      <h1>
+        ${t('aiPoem')}
+      </h1>
+
+
+      <div
+        class="muted"
+        style="
+          margin-bottom:22px
+        ">
+
+        ${escapeHtml(
+          state.poemPrompt
+        )}
+
+      </div>
+
+
+      <div class="section">
+
+        ${
+          state.generatedPoem
+            ? formatPoem(
+                state.generatedPoem
+              )
+            : `
+
+              <div class="muted">
+
+                ${
+                  state.lang === 'sl'
+                    ? 'Pesem še ni ustvarjena.'
+                    : 'The poem has not been generated yet.'
+                }
+
+              </div>
+
+            `
+        }
+
+      </div>
+
+
+      ${
+        state.poemPassages.length
+          ? `
+
+            <div class="card section">
+
+              <h3>
+                ${t('sources')}
+              </h3>
+
+
+              <div
+                class="muted"
+                style="margin-top:10px">
+
+                ${
+                  state.poemPassages
+                    .map(
+                      (passage, index) =>
+                        `${index + 1}. ${
+                          escapeHtml(
+                            passage.bookTitle ||
+                            ''
+                          )
+                        } — ${
+                          escapeHtml(
+                            passage.author ||
+                            ''
+                          )
+                        }${
+                          passage.page
+                            ? ` · page ${
+                                escapeHtml(
+                                  passage.page
+                                )
+                              }`
+                            : ''
+                        }`
+                    )
+                    .join('<br>')
+                }
+
+              </div>
+
+            </div>
+
+          `
+          : ''
+      }
+
+
+      <button
+        type="button"
+        class="primary"
+        onclick="go('create')">
+
+        ← ${t('create')}
+
+      </button>
+
+    `);
+  }
+
+
+  if (
+    state.lectureError
+  ) {
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="go('create')">
+
+          ‹
+
+        </button>
+
+
+        <div style="flex:1">
+
+          <strong>
+            ${t('aiLecture')}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="section card">
+
+        <h3>
+
+          ${
+            state.lang === 'sl'
+              ? 'Predavanja ni bilo mogoče ustvariti'
+              : 'Could not create the lecture'
+          }
+
+        </h3>
+
+
+        <p class="muted">
+
+          ${escapeHtml(
+            state.lectureError
+          )}
+
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="primary"
+        onclick="generate()">
+
+        ✦ ${t('createLecture')}
+
+      </button>
+
+    `);
+  }
+
+
+  return layout(`
+
+    <div class="top">
+
+      <button
+        type="button"
+        class="back"
+        onclick="go('create')">
+
+        ‹
+
+      </button>
+
+
+      <div style="flex:1">
+
+        <strong>
+          ${t('aiLecture')}
+        </strong>
+
+
+        <div class="muted">
+
+          ${state.sources.length}
+          ${t('selectedBooks')}
+          ·
+          ${state.lectureLength} min
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="eyebrow"
+      style="margin-top:10px">
+
+      ${t('generatedWork')}
+
+    </div>
+
+
+    <h1>
+      ${escapeHtml(
+        state.lectureTopic
+      )}
+    </h1>
+
+
+    <div class="section">
+
+      ${
+        state.generatedLecture
+          ? formatLecture(
+              state.generatedLecture
+            )
+          : `
+
+            <div class="muted">
+
+              ${
+                state.lang === 'sl'
+                  ? 'Predavanje še ni ustvarjeno.'
+                  : 'The lecture has not been generated yet.'
+              }
+
+            </div>
+
+          `
+      }
+
+    </div>
+
+
+    ${
+      state.lecturePassages.length
+        ? `
+
+          <div class="card section">
+
+            <h3>
+              ${t('sources')}
+            </h3>
+
+
+            <div
+              class="muted"
+              style="margin-top:10px">
+
+              ${
+                state.lecturePassages
+                  .map(
+                    (passage, index) =>
+                      `${index + 1}. ${
+                        escapeHtml(
+                          passage.bookTitle ||
+                          ''
+                        )
+                      } — ${
+                        escapeHtml(
+                          passage.author ||
+                          ''
+                        )
+                      }${
+                        passage.page
+                          ? ` · page ${
+                              escapeHtml(
+                                passage.page
+                              )
+                            }`
+                          : ''
+                      }`
+                  )
+                  .join('<br>')
+              }
+
+            </div>
+
+          </div>
+
+        `
+        : ''
+    }
+
+
+    <button
+      type="button"
+      class="primary"
+      onclick="go('create')">
+
+      ← ${t('createLecture')}
+
+    </button>
+
+  `);
+}
+
+
+/* =========================================================
+   SAVED / BOOKMARKS
+   ========================================================= */
+
+function openBookmark(index) {
+
+  const bookmark =
+    state.bookmarks[index];
+
+
+  if (!bookmark) {
+    return;
+  }
+
+
+  const bookIndex =
+    BOOKS.findIndex(
+      book =>
+        book.id ===
+        bookmark.bookId
+    );
+
+
+  if (
+    bookIndex < 0 ||
+    BOOKS[bookIndex].sample
+  ) {
+
+    state.book =
+      0;
+
+    state.loadedBookId =
+      'sample-book';
+
+    state.chapter =
+      Number(
+        bookmark.chapter
+      ) || 0;
+
+    state.screen =
+      'reader';
+
+
+    save();
+    render();
+
+
+    loadSampleBook()
+      .then(
+        () => {
+
+          const book =
+            getCurrentBook();
+
+
+          if (
+            book.chapters &&
+            book.chapters.length
+          ) {
+
+            state.chapter =
+              Math.max(
+                0,
+                Math.min(
+                  state.chapter,
+                  book.chapters.length - 1
+                )
+              );
+
+          }
+
+
+          save();
+          render();
+
+
+          scrollToVerse(
+            bookmark.ref
+          );
+
+        }
+      );
+
+
+    return;
+  }
+
+
+  const book =
+    BOOKS[bookIndex];
+
+
+  if (book.pdf) {
+
+    state.book =
+      bookIndex;
+
+
+    save();
+
+
+    openPdf(
+      book.pdf
+    );
+
+
+    return;
+  }
+
+
+  if (
+    Array.isArray(book.pdfs) &&
+    book.pdfs.length
+  ) {
+
+    state.book =
+      bookIndex;
+
+    state.screen =
+      'reader';
+
+    save();
+    render();
+
+    return;
+  }
+}
+
+
+function removeBookmark(index) {
+
+  if (
+    index < 0 ||
+    index >= state.bookmarks.length
+  ) {
+
+    return;
+
+  }
+
+
+  state.bookmarks.splice(
+    index,
+    1
+  );
+
+
+  save();
+  render();
+
+
+  setTimeout(
+    () => {
+
+      toast(
+        t('removed')
+      );
+
+    },
+    50
+  );
+}
+
+
+function saved() {
+
+  const bookmarks =
+    state.bookmarks;
+
+
+  const works =
+    state.works;
+
+
+  return layout(`
+
+    <h2>
+      ${t('saved')}
+    </h2>
+
+
+    <!-- =====================================================
+         GENERATED WORKS
+         ===================================================== -->
+
+    <div class="section">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          margin-bottom:12px
+        ">
+
+        <h3>
+          ${t('works')}
+        </h3>
+
+
+        <span class="muted">
+          ${works.length}
+        </span>
+
+      </div>
+
+
+      ${
+        works.length
+
+          ? works
+              .map(
+                (
+                  work,
+                  index
+                ) => {
+
+                  const isPoem =
+                    work.type ===
+                    'poem';
+
+
+                  const title =
+                    work.title ||
+                    (
+                      isPoem
+                        ? t('aiPoem')
+                        : t('aiLecture')
+                    );
+
+
+                  const preview =
+                    String(
+                      work.content ||
+                      ''
+                    )
+                    .replace(
+                      /\s+/g,
+                      ' '
+                    )
+                    .trim();
+
+
+                  const shortPreview =
+                    preview.length > 170
+                      ? preview.slice(
+                          0,
+                          170
+                        ) + '…'
+                      : preview;
+
+
+                  return `
+
+                    <div
+                      class="row"
+                      style="
+                        align-items:flex-start;
+                        cursor:pointer
+                      "
+                      onclick="
+                        openSavedWork(
+                          ${index}
+                        )
+                      ">
+
+                      <div class="num">
+
+                        ${
+                          isPoem
+                            ? 'P'
+                            : 'A'
+                        }
+
+                      </div>
+
+
+                      <div class="grow">
+
+                        <div
+                          style="
+                            font-weight:600
+                          ">
+
+                          ${escapeHtml(
+                            title
+                          )}
+
+                        </div>
+
+
+                        <div
+                          class="muted"
+                          style="
+                            margin-top:4px
+                          ">
+
+                          ${
+                            isPoem
+                              ? t('poemWork')
+                              : t('lectureWork')
+                          }
+
+                          ${
+                            work.length
+                              ? ` · ${escapeHtml(
+                                  work.length
+                                )} min`
+                              : ''
+                          }
+
+                        </div>
+
+
+                        ${
+                          shortPreview
+                            ? `
+
+                              <div
+                                style="
+                                  margin-top:8px;
+                                  line-height:1.5
+                                ">
+
+                                ${escapeHtml(
+                                  shortPreview
+                                )}
+
+                              </div>
+
+                            `
+                            : ''
+                        }
+
+
+                        <div
+                          class="muted"
+                          style="
+                            margin-top:8px;
+                            font-size:11px
+                          ">
+
+                          ${t('created')}
+                          ·
+                          ${escapeHtml(
+                            formatWorkDate(
+                              work.createdAt
+                            )
+                          )}
+
+                        </div>
+
+
+                        <div
+                          style="
+                            display:flex;
+                            gap:8px;
+                            margin-top:10px;
+                            flex-wrap:wrap
+                          ">
+
+                          <button
+                            type="button"
+                            class="chip on"
+                            onclick="
+                              event.stopPropagation();
+                              openSavedWork(
+                                ${index}
+                              );
+                            ">
+
+                            ${t('openWork')}
+
+                          </button>
+
+
+                          <button
+                            type="button"
+                            class="chip"
+                            onclick="
+                              event.stopPropagation();
+                              downloadSavedWork(
+                                ${index}
+                              );
+                            ">
+
+                            ${
+                              state.lang === 'sl'
+                                ? 'Prenesi'
+                                : 'Download'
+                            }
+
+                          </button>
+
+
+                          <button
+                            type="button"
+                            class="chip"
+                            onclick="
+                              event.stopPropagation();
+                              removeSavedWork(
+                                ${index}
+                              );
+                            ">
+
+                            ${t('deleteWork')}
+
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join('')
+
+          : `
+
+            <div
+              class="muted"
+              style="padding:18px 0">
+
+              ${t('noSavedWorks')}
+
+            </div>
+
+          `
+      }
+
+    </div>
+
+
+    <!-- =====================================================
+         BOOKMARKS
+         ===================================================== -->
+
+    <div class="section">
+
+      <div class="row">
+
+        <div class="num">
+          ★
+        </div>
+
+
+        <div class="grow">
+
+          <div>
+            ${t('bookmark')}
+          </div>
+
+
+          <div class="muted">
+            ${bookmarks.length}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      ${
+        bookmarks.length
+
+          ? bookmarks
+              .map(
+                (
+                  bookmark,
+                  index
+                ) => `
+
+                  <div
+                    class="row"
+                    style="
+                      cursor:pointer;
+                      align-items:flex-start
+                    "
+                    onclick="
+                      openBookmark(
+                        ${index}
+                      )
+                    ">
+
+                    <div class="num">
+                      ★
+                    </div>
+
+
+                    <div class="grow">
+
+                      <div>
+
+                        ${escapeHtml(
+                          bookmark.bookTitle ||
+                          'Rāgānugā Bhakti — Sample Book'
+                        )}
+
+                      </div>
+
+
+                      <div class="muted">
+
+                        ${escapeHtml(
+                          bookmark.chapterTitle ||
+                          `${t('chapter')} ${
+                            Number(
+                              bookmark.chapter ||
+                              0
+                            ) + 1
+                          }`
+                        )}
+
+                        ·
+
+                        ${escapeHtml(
+                          bookmark.ref ||
+                          ''
+                        )}
+
+                      </div>
+
+
+                      <div
+                        style="
+                          margin-top:7px;
+                          line-height:1.5
+                        ">
+
+                        ${
+                          state.lang === 'sl'
+                            ? escapeHtml(
+                                bookmark.slovenian ||
+                                bookmark.english ||
+                                ''
+                              )
+                            : escapeHtml(
+                                bookmark.english ||
+                                ''
+                              )
+                        }
+
+                      </div>
+
+
+                      <div
+                        style="
+                          display:flex;
+                          gap:8px;
+                          margin-top:10px
+                        ">
+
+                        <button
+                          type="button"
+                          class="chip on"
+                          onclick="
+                            event.stopPropagation();
+                            openBookmark(
+                              ${index}
+                            );
+                          ">
+
+                          ${t('openBookmark')}
+
+                        </button>
+
+
+                        <button
+                          type="button"
+                          class="chip"
+                          onclick="
+                            event.stopPropagation();
+                            removeBookmark(
+                              ${index}
+                            );
+                          ">
+
+                          ${t('removeBookmark')}
+
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                `
+              )
+              .join('')
+
+          : `
+
+            <div
+              class="muted"
+              style="padding:18px 0">
+
+              ${t('noBookmarks')}
+
+            </div>
+
+          `
+      }
+
+    </div>
+
+  `);
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render() {
+
+  const root =
+    document.getElementById('app');
+
+
+  if (!root) {
+    return;
+  }
+
+
+  root.innerHTML =
+
+    state.screen === 'library'
+      ? library()
+
+    : state.screen === 'reader'
+      ? reader()
+
+    : state.screen === 'search'
+      ? search()
+
+    : state.screen === 'create'
+      ? create()
+
+    : state.screen === 'result'
+      ? result()
+
+    : state.screen === 'saved'
+      ? saved()
+
+    : library();
+}
+
+
+/* =========================================================
+   GLOBAL FUNCTIONS
+   ========================================================= */
+
+window.setLanguage =
+  setLanguage;
+
+window.go =
+  go;
+
+window.toast =
+  toast;
+
+window.openBook =
+  openBook;
+
+window.openPdf =
+  openPdf;
+
+window.previousChapter =
+  previousChapter;
+
+window.nextChapter =
+  nextChapter;
+
+window.toggleBookmark =
+  toggleBookmark;
+
+window.openBookmark =
+  openBookmark;
+
+window.removeBookmark =
+  removeBookmark;
+
+window.setSearchQuery =
+  setSearchQuery;
+
+window.setSearchFilter =
+  setSearchFilter;
+
+window.openSearchResult =
+  openSearchResult;
+
+window.generate =
+  generate;
+
+window.generatePoem =
+  generatePoem;
+
+window.toggleLectureSource =
+  toggleLectureSource;
+
+window.setLectureTopic =
+  setLectureTopic;
+
+window.setLectureLength =
+  setLectureLength;
+
+window.setPoemPrompt =
+  setPoemPrompt;
+
+window.openSavedWork =
+  openSavedWork;
+
+window.downloadSavedWork =
+  downloadSavedWork;
+
+window.removeSavedWork =
+  removeSavedWork;
+
+window.save =
+  save;
+
+window.render =
+  render;
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+render();
