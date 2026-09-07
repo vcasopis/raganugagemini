@@ -233,10 +233,22 @@ const I18N = {
     poemPromptPlaceholder: 'Describe exactly what you want: theme, number of verses, language, style, mood, Sanskrit terms, Bengali, English, Slovenian, etc.',
     createPoem: 'Create poem',
 
+    askBooks: 'Ask the Books',
+    askQuestion: 'Question',
+    askQuestionPlaceholder: 'Ask for a summary, comparison, explanation, specific facts, textual details, or anything else about the selected books…',
+    askDescription: 'Ask anything about the selected PDF books. The answer is based only on the library source material.',
+    askBooksButton: 'Ask the Books',
+    answer: 'Answer',
+    answerPreparing: 'AI is searching the books and preparing your answer…',
+    answerNotCreated: 'The answer has not been created yet.',
+    noAnswer: 'The AI could not create an answer.',
+    sourceMaterialOnly: 'Answers are based only on the selected PDF books.',
+
     works: 'Works',
     noSavedWorks: 'No generated works yet.',
     lectureWork: 'Lecture',
     poemWork: 'Poem',
+    askWork: 'Book question',
     created: 'Created',
     deleteWork: 'Delete',
     openWork: 'Open',
@@ -343,10 +355,22 @@ const I18N = {
     poemPromptPlaceholder: 'Opiši vse, kar želiš: temo, število verzov, jezik, slog, razpoloženje, sanskrtske izraze, bengalščino, angleščino, slovenščino itd.',
     createPoem: 'Ustvari pesem',
 
+    askBooks: 'Vprašaj knjige',
+    askQuestion: 'Vprašanje',
+    askQuestionPlaceholder: 'Vprašaj za povzetek, primerjavo, razlago, konkretne podatke, besedilne podrobnosti ali karkoli drugega o izbranih knjigah…',
+    askDescription: 'Postavi kakršnokoli vprašanje o vsebini izbranih PDF knjig. Odgovor temelji samo na knjižničnem gradivu.',
+    askBooksButton: 'Vprašaj knjige',
+    answer: 'Odgovor',
+    answerPreparing: 'AI išče po knjigah in pripravlja odgovor…',
+    answerNotCreated: 'Odgovor še ni ustvarjen.',
+    noAnswer: 'AI ni mogel ustvariti odgovora.',
+    sourceMaterialOnly: 'Odgovori temeljijo samo na izbranih PDF knjigah.',
+
     works: 'Dela',
     noSavedWorks: 'Zaenkrat še ni ustvarjenih del.',
     lectureWork: 'Predavanje',
     poemWork: 'Pesem',
+    askWork: 'Vprašanje knjig',
     created: 'Ustvarjeno',
     deleteWork: 'Izbriši',
     openWork: 'Odpri',
@@ -390,6 +414,12 @@ let state = {
   generatedPoem: '',
   poemError: '',
   poemPassages: [],
+
+  askPrompt: '',
+  askGenerating: false,
+  generatedAnswer: '',
+  askError: '',
+  askPassages: [],
 
   creationType: 'lecture',
 
@@ -512,8 +542,46 @@ if (!Array.isArray(state.poemPassages)) {
 
 
 if (
+  typeof state.askPrompt !==
+  'string'
+) {
+  state.askPrompt = '';
+}
+
+
+if (
+  typeof state.askGenerating !==
+  'boolean'
+) {
+  state.askGenerating = false;
+}
+
+
+if (
+  typeof state.generatedAnswer !==
+  'string'
+) {
+  state.generatedAnswer = '';
+}
+
+
+if (
+  typeof state.askError !==
+  'string'
+) {
+  state.askError = '';
+}
+
+
+if (!Array.isArray(state.askPassages)) {
+  state.askPassages = [];
+}
+
+
+if (
   state.creationType !== 'poem' &&
-  state.creationType !== 'lecture'
+  state.creationType !== 'lecture' &&
+  state.creationType !== 'ask'
 ) {
   state.creationType = 'lecture';
 }
@@ -609,12 +677,6 @@ async function loadBooksFromGitHub() {
     const loadedBooks = [];
 
 
-    /*
-     * STARE KNJIGE
-     *
-     * Ohranimo stare naslove in avtorje.
-     */
-
     LEGACY_BOOKS.forEach(
       legacy => {
 
@@ -656,13 +718,6 @@ async function loadBooksFromGitHub() {
       }
     );
 
-
-    /*
-     * NOVE KNJIGE
-     *
-     * Vsak PDF, ki ni v starem seznamu,
-     * se samodejno doda.
-     */
 
     pdfFiles.forEach(
       file => {
@@ -719,10 +774,6 @@ async function loadBooksFromGitHub() {
     );
 
 
-    /*
-     * Razvrstitev po naslovu.
-     */
-
     BOOKS =
       loadedBooks.sort(
         (a, b) =>
@@ -741,10 +792,6 @@ async function loadBooksFromGitHub() {
       );
 
 
-    /*
-     * Vse knjige so privzeto na voljo AI-ju.
-     */
-
     state.sources =
       BOOKS.map(
         (
@@ -753,10 +800,6 @@ async function loadBooksFromGitHub() {
         ) => index
       );
 
-
-    /*
-     * Zagotovi veljaven trenutni indeks.
-     */
 
     if (
       BOOKS.length > 0
@@ -784,11 +827,6 @@ async function loadBooksFromGitHub() {
     save();
     render();
 
-
-    /*
-     * Če smo že na Search,
-     * zgradimo nov indeks.
-     */
 
     if (
       state.screen ===
@@ -829,11 +867,6 @@ async function loadBooksFromGitHub() {
       error
     );
 
-
-    /*
-     * Če GitHub API odpove,
-     * stare knjige vseeno ostanejo.
-     */
 
     BOOKS =
       LEGACY_BOOKS.map(
@@ -968,6 +1001,18 @@ function save() {
 
       poemPassages:
         state.poemPassages,
+
+      askPrompt:
+        state.askPrompt,
+
+      generatedAnswer:
+        state.generatedAnswer,
+
+      askError:
+        state.askError,
+
+      askPassages:
+        state.askPassages,
 
       creationType:
         state.creationType,
@@ -4879,6 +4924,19 @@ function setPoemPrompt(
 }
 
 
+function setAskPrompt(
+  value
+) {
+
+  state.askPrompt =
+    value;
+
+
+  save();
+
+}
+
+
 /* =========================================================
    AI PASSAGE SELECTION
    ========================================================= */
@@ -5177,9 +5235,14 @@ function saveGeneratedWork(
           ? t(
               'aiPoem'
             )
-          : t(
-              'aiLecture'
-            )
+          : work.type ===
+            'ask'
+            ? t(
+                'askBooks'
+              )
+            : t(
+                'aiLecture'
+              )
       ),
 
     prompt:
@@ -5217,7 +5280,7 @@ function saveGeneratedWork(
       existing =>
         existing &&
         existing.id !==
-          item.id
+        item.id
     )
   ];
 
@@ -5300,6 +5363,11 @@ function downloadSavedWork(
     'poem';
 
 
+  const isAsk =
+    work.type ===
+    'ask';
+
+
   const typeLabel =
     isPoem
 
@@ -5310,12 +5378,21 @@ function downloadSavedWork(
             : 'AI Poem'
         )
 
-      : (
-          state.lang ===
-          'sl'
-            ? 'AI predavanje'
-            : 'AI Lecture'
-        );
+      : isAsk
+
+        ? (
+            state.lang ===
+            'sl'
+              ? 'Vprašaj knjige'
+              : 'Ask the Books'
+          )
+
+        : (
+            state.lang ===
+            'sl'
+              ? 'AI predavanje'
+              : 'AI Lecture'
+          );
 
 
   const title =
@@ -6253,7 +6330,46 @@ function openSavedWork(
     state.poemGenerating =
       false;
 
-  } else {
+  }
+
+  else if (
+    work.type ===
+    'ask'
+  ) {
+
+    state.creationType =
+      'ask';
+
+
+    state.askPrompt =
+      work.prompt ||
+      work.title ||
+      '';
+
+
+    state.generatedAnswer =
+      work.content ||
+      '';
+
+
+    state.askPassages =
+      Array.isArray(
+        work.passages
+      )
+        ? work.passages
+        : [];
+
+
+    state.askError =
+      '';
+
+
+    state.askGenerating =
+      false;
+
+  }
+
+  else {
 
     state.creationType =
       'lecture';
@@ -6929,6 +7045,286 @@ async function generatePoem() {
 
 
 /* =========================================================
+   ASK THE BOOKS
+   ========================================================= */
+
+async function generateAsk() {
+
+  if (
+    !state.sources.length
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej izberi vsaj eno knjigo.'
+        : 'Please select at least one book.'
+    );
+
+
+    return;
+
+  }
+
+
+  if (
+    !state.askPrompt.trim()
+  ) {
+
+    toast(
+      state.lang === 'sl'
+        ? 'Najprej napiši vprašanje.'
+        : 'Please enter a question.'
+    );
+
+
+    return;
+
+  }
+
+
+  state.creationType =
+    'ask';
+
+
+  state.askGenerating =
+    true;
+
+
+  state.generatedAnswer =
+    '';
+
+
+  state.askError =
+    '';
+
+
+  state.askPassages =
+    [];
+
+
+  state.screen =
+    'result';
+
+
+  save();
+  render();
+
+
+  try {
+
+    if (
+      !state.searchReady
+    ) {
+
+      await buildSearchIndex();
+
+    }
+
+
+    const selected =
+      findAiPassages(
+        state.askPrompt.trim()
+      );
+
+
+    if (!selected.length) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'V izbranih PDF knjigah ni bilo mogoče najti ustreznih odlomkov za to vprašanje.'
+          : 'No relevant passages were found in the selected PDF books.'
+      );
+
+    }
+
+
+    state.askPassages =
+      selected;
+
+
+    save();
+    render();
+
+
+    const response =
+      await fetch(
+        'https://raganuga-lecture.eyeslotus.workers.dev',
+        {
+          method:
+            'POST',
+
+          headers: {
+
+            'Content-Type':
+              'application/json'
+
+          },
+
+          body:
+            JSON.stringify({
+
+              type:
+                'ask',
+
+              prompt:
+                state.askPrompt.trim(),
+
+              language:
+                state.lang === 'sl'
+                  ? 'Slovenščina'
+                  : 'English',
+
+              passages:
+                selected
+
+            })
+
+        }
+      );
+
+
+    let data =
+      null;
+
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch (error) {
+
+      throw new Error(
+        'The AI service returned an invalid response.'
+      );
+
+    }
+
+
+    if (
+      !response.ok ||
+      !data ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data?.error ||
+        `AI service returned HTTP ${response.status}.`
+      );
+
+    }
+
+
+    state.generatedAnswer =
+      String(
+        data.answer ||
+        data.work ||
+        data.content ||
+        ''
+      )
+        .trim();
+
+
+    if (
+      !state.generatedAnswer
+    ) {
+
+      throw new Error(
+        state.lang === 'sl'
+          ? 'AI ni vrnil odgovora.'
+          : 'The AI returned an empty answer.'
+      );
+
+    }
+
+
+    saveGeneratedWork({
+
+      type:
+        'ask',
+
+      title:
+        state.askPrompt.trim(),
+
+      prompt:
+        state.askPrompt.trim(),
+
+      language:
+        state.lang === 'sl'
+          ? 'Slovenščina'
+          : 'English',
+
+      content:
+        state.generatedAnswer,
+
+      passages:
+        state.askPassages
+
+    });
+
+
+    state.askError =
+      '';
+
+
+    state.askGenerating =
+      false;
+
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+
+    window.scrollTo({
+
+      top:
+        0,
+
+      behavior:
+        'smooth'
+
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      'Ask the Books error:',
+      error
+    );
+
+
+    state.askGenerating =
+      false;
+
+
+    state.askError =
+      error?.message ||
+      (
+        state.lang ===
+        'sl'
+          ? 'Odgovora ni bilo mogoče ustvariti.'
+          : 'Could not create the answer.'
+      );
+
+
+    state.screen =
+      'result';
+
+
+    save();
+    render();
+
+  }
+
+}
+
+
+/* =========================================================
    CREATE
    ========================================================= */
 
@@ -7007,6 +7403,42 @@ function create() {
 
           ${escapeHtml(
             state.poemPrompt
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+
+  }
+
+
+  if (
+    state.askGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+
+        <h2
+          style="
+            margin-top:20px
+          ">
+
+          ${t('answerPreparing')}
+
+        </h2>
+
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.askPrompt
           )}
 
         </div>
@@ -7147,7 +7579,11 @@ function create() {
     </div>
 
 
-      <div class="card" style="margin-top:24px;">
+    <div
+      class="card"
+      style="
+        margin-top:24px
+      ">
 
       <div
         style="
@@ -7448,6 +7884,117 @@ function create() {
 
         ${t(
           'createPoem'
+        )}
+
+      </button>
+
+
+      <div
+        class="muted"
+        style="
+          text-align:center;
+          margin-top:12px
+        ">
+
+        ${selectedCount}
+
+        ${t(
+          'selectedBooks'
+        )}
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="section card"
+      style="
+        margin-top:32px
+      ">
+
+      <h2
+        style="
+          margin:0
+        ">
+
+        ${t('askBooks')}
+
+      </h2>
+
+
+      <p
+        class="muted"
+        style="
+          margin-top:8px;
+          margin-bottom:18px
+        ">
+
+        ${t(
+          'askDescription'
+        )}
+
+      </p>
+
+
+      <div
+        class="muted"
+        style="
+          margin-bottom:18px;
+          padding:10px 12px;
+          border:1px solid rgba(0,0,0,0.08);
+          border-radius:10px;
+          line-height:1.5
+        ">
+
+        🔒
+
+        ${t(
+          'sourceMaterialOnly'
+        )}
+
+      </div>
+
+
+      <h3>
+
+        ${t('askQuestion')}
+
+      </h3>
+
+
+      <textarea
+        class="textarea"
+        style="
+          margin-top:10px;
+          min-height:220px
+        "
+        oninput="
+          setAskPrompt(
+            this.value
+          )
+        "
+        placeholder="${t(
+          'askQuestionPlaceholder'
+        )}">${escapeHtml(
+          state.askPrompt
+        )}</textarea>
+
+
+      <button
+        type="button"
+        class="primary"
+        style="
+          margin-top:16px
+        "
+        onclick="
+          generateAsk()
+        ">
+
+        ✦
+
+        ${t(
+          'askBooksButton'
         )}
 
       </button>
@@ -7857,6 +8404,42 @@ function result() {
 
 
   if (
+    state.askGenerating
+  ) {
+
+    return layout(`
+
+      <div class="working">
+
+        <div class="dot"></div>
+
+
+        <h2
+          style="
+            margin-top:20px
+          ">
+
+          ${t('answerPreparing')}
+
+        </h2>
+
+
+        <div class="muted">
+
+          ${escapeHtml(
+            state.askPrompt
+          )}
+
+        </div>
+
+      </div>
+
+    `);
+
+  }
+
+
+  if (
     state.creationType ===
     'poem'
   ) {
@@ -8080,7 +8663,270 @@ function result() {
                             : ''
                         }${
                           passage.page
-                            ? ` · page ${
+                            ? ` · ${
+                                state.lang === 'sl'
+                                  ? 'stran'
+                                  : 'page'
+                              } ${
+                                escapeHtml(
+                                  passage.page
+                                )
+                              }`
+                            : ''
+                        }`
+                    )
+                    .join(
+                      '<br>'
+                    )
+                }
+
+              </div>
+
+            </div>
+
+          `
+          : ''
+      }
+
+
+      <button
+        type="button"
+        class="primary"
+        onclick="
+          go('create')
+        ">
+
+        ←
+
+        ${t('create')}
+
+      </button>
+
+    `);
+
+  }
+
+
+  if (
+    state.creationType ===
+    'ask'
+  ) {
+
+    if (
+      state.askError
+    ) {
+
+      return layout(`
+
+        <div class="top">
+
+          <button
+            type="button"
+            class="back"
+            onclick="
+              go('create')
+            ">
+
+            ‹
+
+          </button>
+
+
+          <div style="flex:1">
+
+            <strong>
+
+              ${t('askBooks')}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="section card">
+
+          <h3>
+
+            ${t('noAnswer')}
+
+          </h3>
+
+
+          <p class="muted">
+
+            ${escapeHtml(
+              state.askError
+            )}
+
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="primary"
+          onclick="
+            generateAsk()
+          ">
+
+          ✦
+
+          ${t(
+            'askBooksButton'
+          )}
+
+        </button>
+
+      `);
+
+    }
+
+
+    return layout(`
+
+      <div class="top">
+
+        <button
+          type="button"
+          class="back"
+          onclick="
+            go('create')
+          ">
+
+          ‹
+
+        </button>
+
+
+        <div style="flex:1">
+
+          <strong>
+
+            ${t('askBooks')}
+
+          </strong>
+
+
+          <div class="muted">
+
+            ${state.sources.length}
+
+            ${t(
+              'selectedBooks'
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="eyebrow"
+        style="
+          margin-top:10px
+        ">
+
+        ${t('generatedWork')}
+
+      </div>
+
+
+      <h1>
+
+        ${t('answer')}
+
+      </h1>
+
+
+      <div
+        class="muted"
+        style="
+          margin-bottom:22px;
+          line-height:1.6
+        ">
+
+        ${escapeHtml(
+          state.askPrompt
+        )}
+
+      </div>
+
+
+      <div class="section">
+
+        ${
+          state.generatedAnswer
+
+            ? formatLecture(
+                state.generatedAnswer
+              )
+
+            : `
+
+              <div class="muted">
+
+                ${t(
+                  'answerNotCreated'
+                )}
+
+              </div>
+
+            `
+        }
+
+      </div>
+
+
+      ${
+        state.askPassages.length
+          ? `
+
+            <div class="card section">
+
+              <h3>
+
+                ${t('sources')}
+
+              </h3>
+
+
+              <div
+                class="muted"
+                style="
+                  margin-top:10px;
+                  line-height:1.7
+                ">
+
+                ${
+                  state.askPassages
+                    .map(
+                      (
+                        passage,
+                        index
+                      ) =>
+                        `${index + 1}. ${
+                          escapeHtml(
+                            passage.bookTitle ||
+                            ''
+                          )
+                        }${
+                          passage.author
+                            ? ` — ${escapeHtml(
+                                passage.author
+                              )}`
+                            : ''
+                        }${
+                          passage.page
+                            ? ` · ${
+                                state.lang === 'sl'
+                                  ? 'stran'
+                                  : 'page'
+                              } ${
                                 escapeHtml(
                                   passage.page
                                 )
@@ -8335,7 +9181,11 @@ function result() {
                           : ''
                       }${
                         passage.page
-                          ? ` · page ${
+                          ? ` · ${
+                              state.lang === 'sl'
+                                ? 'stran'
+                                : 'page'
+                            } ${
                               escapeHtml(
                                 passage.page
                               )
@@ -8634,6 +9484,11 @@ function saved() {
                     'poem';
 
 
+                  const isAsk =
+                    work.type ===
+                    'ask';
+
+
                   const title =
                     work.title ||
                     (
@@ -8641,9 +9496,13 @@ function saved() {
                         ? t(
                             'aiPoem'
                           )
-                        : t(
-                            'aiLecture'
-                          )
+                        : isAsk
+                          ? t(
+                              'askBooks'
+                            )
+                          : t(
+                              'aiLecture'
+                            )
                     );
 
 
@@ -8691,7 +9550,9 @@ function saved() {
                         ${
                           isPoem
                             ? 'P'
-                            : 'A'
+                            : isAsk
+                              ? 'Q'
+                              : 'A'
                         }
 
                       </div>
@@ -8722,9 +9583,13 @@ function saved() {
                               ? t(
                                   'poemWork'
                                 )
-                              : t(
-                                  'lectureWork'
-                                )
+                              : isAsk
+                                ? t(
+                                    'askWork'
+                                  )
+                                : t(
+                                    'lectureWork'
+                                  )
                           }
 
 
@@ -9199,6 +10064,10 @@ window.generatePoem =
   generatePoem;
 
 
+window.generateAsk =
+  generateAsk;
+
+
 window.toggleLectureSource =
   toggleLectureSource;
 
@@ -9213,6 +10082,10 @@ window.setLectureLength =
 
 window.setPoemPrompt =
   setPoemPrompt;
+
+
+window.setAskPrompt =
+  setAskPrompt;
 
 
 window.openSavedWork =
